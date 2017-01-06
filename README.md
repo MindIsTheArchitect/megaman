@@ -1,4 +1,4 @@
 # megaman
 Mega Man for TempleOS
 
-Placeholder, I will update soon.
+[![Mega Man for TempleOS](http://i.imgur.com/Qs7ssHp.png)](https://www.youtube.com/watch?v=RGcRwgK-u4Q)

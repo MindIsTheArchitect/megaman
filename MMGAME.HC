@@ -16,7 +16,7 @@ I64 MMVBase;
 U8 MMScanCode;
 
 U0 InitGameSettings() {
-    MMHealth = 100;
+    MMHealth = 56;
     MMDeath = 0;
     MMCrouch = 0;
     MMState = 1;
@@ -113,6 +113,30 @@ U0 DrawEnemies() {
                     break;
             };
         };
+    };
+};
+
+U0 DrawMMLifeMeter() {
+    I64 LMIncr;
+    I64 LYIncr;
+    I64 LFIncr;
+    Buffer->color = BLACK;
+    GrRect(Buffer, 48, 32, 8*MMPixScale, 56*MMPixScale);
+    Buffer->color = LTGRAY;
+    LMIncr = 27*(MMPixScale*2);
+    for (LFIncr=0;LFIncr<(MMHealth/2);LFIncr++) {
+        for (LYIncr=0;LYIncr<MMPixScale;LYIncr++) {
+            GrLine(Buffer, 48+(1*MMPixScale), 32+(LMIncr+LYIncr), 48+(7*MMPixScale), 32+(LMIncr+LYIncr));
+        };
+        LMIncr -= MMPixScale*2;
+    };
+    Buffer->color = WHITE;
+    LMIncr = 27*(MMPixScale*2);
+    for (LFIncr=0;LFIncr<(MMHealth/2);LFIncr++) {
+        for (LYIncr=0;LYIncr<MMPixScale;LYIncr++) {
+            GrLine(Buffer, 48+(3*MMPixScale), 32+(LMIncr+LYIncr), 48+(5*MMPixScale), 32+(LMIncr+LYIncr));
+        };
+        LMIncr -= MMPixScale*2;
     };
 };
 
@@ -291,6 +315,7 @@ U0 GameLoop() {
         if (MMScanCode==0x50) {
             MMCrouch = 1;
         };
+        DrawMMLifeMeter;
         GrUpdateScrn;
         Sleep(0);
     };
@@ -318,8 +343,8 @@ U0 MegaMan() {
     // Set Mega Man default state.
     MMState = 1;
     // Spawn some "evil" Mega Men on the playfield.
-    NewEnemy(MMX+(16*MMPixScale)+(48*MMPixScale), ((MMY-MMJumpY)+(3*MMPixScale)+(8*MMPixScale))-8, 8, 0, 10, 1, 0);
-    NewEnemy(MMX+(48*MMPixScale)+(48*MMPixScale), ((MMY-MMJumpY)-(3*MMPixScale)+(8*MMPixScale))-8, 8, 0, 10, 1, 0);
+    NewEnemy(MMX+(16*MMPixScale)+(48*MMPixScale), ((MMY-MMJumpY)+(3*MMPixScale)+(8*MMPixScale))-8, 3, 0, 10, 1, 0);
+    NewEnemy(MMX+(48*MMPixScale)+(48*MMPixScale), ((MMY-MMJumpY)-(3*MMPixScale)+(8*MMPixScale))-8, 3, 0, 10, 1, 0);
     GameLoop;
     // Exit game.
     PaletteSetStd;

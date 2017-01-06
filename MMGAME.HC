@@ -28,7 +28,7 @@ U0 InitGameSettings() {
     MMSlide = 0;
     MMShoot = 0;
     MMJumpY = 0;
-    MMVBase = 24;
+    MMVBase = 20;
     MMX = 0;
     MMDir = 1;
     MMPixScale = 3;
@@ -84,16 +84,16 @@ U0 DrawEnemies() {
                 case 0:
                     switch(MMEnState[MMESCtr]) {
                         case 1:
-                            MMSprite(SPR_Megaman, MMEnX[MMESCtr], MMEnY[MMESCtr], ((32*3)*1), ((32*3)*0), ((32*3)*2)-1, ((32*3)*1)-1, MMEnDir[MMESCtr]);
+                            MMSprite(SPR_Evilman, MMEnX[MMESCtr], MMEnY[MMESCtr], ((32*3)*1), ((32*3)*0), ((32*3)*2)-1, ((32*3)*1)-1, MMEnDir[MMESCtr]);
                             break;
                         case 2:
-                            MMSprite(SPR_Megaman, MMEnX[MMESCtr], MMEnY[MMESCtr], ((32*3)*2), ((32*3)*0), ((32*3)*3)-1, ((32*3)*1)-1, MMEnDir[MMESCtr]);
+                            MMSprite(SPR_Evilman, MMEnX[MMESCtr], MMEnY[MMESCtr], ((32*3)*2), ((32*3)*0), ((32*3)*3)-1, ((32*3)*1)-1, MMEnDir[MMESCtr]);
                             break;
                         case 3:
-                            MMSprite(SPR_Megaman, MMEnX[MMESCtr], MMEnY[MMESCtr], ((32*3)*3), ((32*3)*0), ((32*3)*4)-1, ((32*3)*1)-1, MMEnDir[MMESCtr]);
+                            MMSprite(SPR_Evilman, MMEnX[MMESCtr], MMEnY[MMESCtr], ((32*3)*3), ((32*3)*0), ((32*3)*4)-1, ((32*3)*1)-1, MMEnDir[MMESCtr]);
                             break;
                         case 4:
-                            MMSprite(SPR_Megaman, MMEnX[MMESCtr], MMEnY[MMESCtr], ((32*3)*2), ((32*3)*0), ((32*3)*3)-1, ((32*3)*1)-1, MMEnDir[MMESCtr]);
+                            MMSprite(SPR_Evilman, MMEnX[MMESCtr], MMEnY[MMESCtr], ((32*3)*2), ((32*3)*0), ((32*3)*3)-1, ((32*3)*1)-1, MMEnDir[MMESCtr]);
                             break;
                     };
                     if (MMEnState[MMESCtr]>0) {

@@ -1,0 +1,9 @@
+U8 SFX_SHOT 	= 0x55;
+U8 SFX_JUMP 	= 0x56;
+U8 SFX_MMHIT 	= 0x57;
+U8 SFX_MMDEATH 	= 0x58;
+U8 SFX_ENHIT 	= 0x59;
+
+U0 Sfx(U8 _Snd) {
+	OutU8(0x03F8, _Snd);
+};

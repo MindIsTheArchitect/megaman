@@ -1,5 +1,5 @@
 I64 MMDeath, MMDeathFlop, MMDeathInit, MMDeathX[13], MMDeathY[13];
-I64 MMEnDir[8], MMEnHealth[8], MMEnInit, MMEnState[8], MMEnX[8], MMEnY[8];
+I64 MMEnDamage[8], MMEnDir[8], MMEnHealth[8], MMEnInit, MMEnState[8], MMEnType[8], MMEnX[8], MMEnY[8];
 I64 MMJump, MMJumpY;
 I64 MMHit, MMHitDir, MMHitFlop;
 I64 MMProjDir[8], MMProjInit, MMProjX[8], MMProjY[8];
@@ -28,34 +28,36 @@ U0 InitGameSettings() {
     MMSlide = 0;
     MMShoot = 0;
     MMJumpY = 0;
-    MMVBase = 16;
+    MMVBase = 24;
     MMX = 0;
     MMDir = 1;
     MMPixScale = 3;
     MMY = 320;
 };
 
-U0 NewEnemy(I64 xx, I64 yy, I64 dir, I64 state) {
+U0 NewEnemy(I64 EnXX, I64 EnYY, I64 EnDamage, I64 EnDir, I64 EnHealth, I64 EnState, I64 EnType) {
     I64 MMESCtr;
     for (MMESCtr=0;MMESCtr<8;MMESCtr++) {
         if (MMEnDir[MMESCtr]==-1) {
-            MMEnState[MMESCtr] = state;
-            MMEnHealth[MMESCtr] = 10;
-            MMEnX[MMESCtr] = xx;
-            MMEnY[MMESCtr] = yy;
-            MMEnDir[MMESCtr] = dir;
+            MMEnDamage[MMESCtr] = EnDamage;
+            MMEnDir[MMESCtr] = EnDir;
+            MMEnHealth[MMESCtr] = EnHealth;
+            MMEnState[MMESCtr] = EnState;
+            MMEnType[MMESCtr] = EnType;
+            MMEnX[MMESCtr] = EnXX;
+            MMEnY[MMESCtr] = EnYY;
             break;
         };
     };
 };
 
-U0 NewProjectile(I64 xx, I64 yy, I64 dir) {
+U0 NewProjectile(I64 ProjXX, I64 ProjYY, I64 ProjDir) {
     I64 MMPSCtr;
     for (MMPSCtr=0;MMPSCtr<8;MMPSCtr++) {
         if (MMProjDir[MMPSCtr]==-1) {
-            MMProjX[MMPSCtr] = xx;
-            MMProjY[MMPSCtr] = yy;
-            MMProjDir[MMPSCtr] = dir;
+            MMProjX[MMPSCtr] = ProjXX;
+            MMProjY[MMPSCtr] = ProjYY;
+            MMProjDir[MMPSCtr] = ProjDir;
             break;
         };
     };
@@ -72,13 +74,44 @@ U0 DrawEnemies() {
                         if(MMProjX[MMPSCtr]>=MMEnX[MMESCtr] && MMProjX[MMPSCtr]+8*3<=MMEnX[MMESCtr]+32*3) {
                             Sfx(SFX_ENHIT);
                             MMProjDir[MMPSCtr]=-1;
-                            MMEnHealth[MMESCtr]--;
+                            MMEnHealth[MMESCtr] -= 3;
                             if (MMEnHealth[MMESCtr]<1) { MMEnState[MMESCtr]=-1; };
                         };
                     };
                 };
             };
-            MMSprite(SPR_Megaman, MMEnX[MMESCtr], MMEnY[MMESCtr], ((32*3)*0), ((32*3)*0), ((32*3)*1)-1, ((32*3)*1)-1, 0);
+            switch(MMEnType[MMESCtr]) {
+                case 0:
+                    switch(MMEnState[MMESCtr]) {
+                        case 1:
+                            MMSprite(SPR_Megaman, MMEnX[MMESCtr], MMEnY[MMESCtr], ((32*3)*1), ((32*3)*0), ((32*3)*2)-1, ((32*3)*1)-1, MMEnDir[MMESCtr]);
+                            break;
+                        case 2:
+                            MMSprite(SPR_Megaman, MMEnX[MMESCtr], MMEnY[MMESCtr], ((32*3)*2), ((32*3)*0), ((32*3)*3)-1, ((32*3)*1)-1, MMEnDir[MMESCtr]);
+                            break;
+                        case 3:
+                            MMSprite(SPR_Megaman, MMEnX[MMESCtr], MMEnY[MMESCtr], ((32*3)*3), ((32*3)*0), ((32*3)*4)-1, ((32*3)*1)-1, MMEnDir[MMESCtr]);
+                            break;
+                        case 4:
+                            MMSprite(SPR_Megaman, MMEnX[MMESCtr], MMEnY[MMESCtr], ((32*3)*2), ((32*3)*0), ((32*3)*3)-1, ((32*3)*1)-1, MMEnDir[MMESCtr]);
+                            break;
+                    };
+                    if (MMEnState[MMESCtr]>0) {
+                        switch(MMEnDir[MMESCtr]) {
+                            case 0:
+                                MMEnX[MMESCtr] -= 8;
+                                break;
+                            case 1:
+                                MMEnX[MMESCtr] += 8;
+                                break;
+                        };
+                        if (MMEnX[MMESCtr] < 32) { MMEnDir[MMESCtr] = 1; };
+                        if (MMEnX[MMESCtr] > 600) { MMEnDir[MMESCtr] = 0; };
+                        MMEnState[MMESCtr]++;
+                        if (MMEnState[MMESCtr]>4) { MMEnState[MMESCtr] = 1; };
+                    };
+                    break;
+            };
         };
     };
 };
@@ -109,7 +142,7 @@ U0 GameLoop() {
                     if(MMY-MMJumpY>=MMEnY[MMESCtr]-32*1 && (MMY-MMJumpY)+32*3<=MMEnY[MMESCtr]+32*5) {
                         if(MMX>=MMEnX[MMESCtr]-32*1 && MMX+32*3<=MMEnX[MMESCtr]+32*5) {
                             MMHit=1;
-                            MMHealth -= 9;
+                            MMHealth -= MMEnDamage[MMESCtr];
                             if (MMHealth>0) { Sfx(SFX_MMHIT); };
                             if (MMHealth<=0) {
                                 for(MMDeathInit=0;MMDeathInit<12;MMDeathInit++) { MMDeathX[MMDeathInit] = MMX; MMDeathY[MMDeathInit] = MMY-MMJumpY; }
@@ -285,8 +318,8 @@ U0 MegaMan() {
     // Set Mega Man default state.
     MMState = 1;
     // Spawn some "evil" Mega Men on the playfield.
-    NewEnemy(MMX+(16*MMPixScale)+(48*MMPixScale), ((MMY-MMJumpY)+(3*MMPixScale)+(8*MMPixScale))-8, 0, 1);
-    NewEnemy(MMX+(48*MMPixScale)+(48*MMPixScale), ((MMY-MMJumpY)-(3*MMPixScale)+(8*MMPixScale))-8, 0, 1);
+    NewEnemy(MMX+(16*MMPixScale)+(48*MMPixScale), ((MMY-MMJumpY)+(3*MMPixScale)+(8*MMPixScale))-8, 8, 0, 10, 1, 0);
+    NewEnemy(MMX+(48*MMPixScale)+(48*MMPixScale), ((MMY-MMJumpY)-(3*MMPixScale)+(8*MMPixScale))-8, 8, 0, 10, 1, 0);
     GameLoop;
     // Exit game.
     PaletteSetStd;

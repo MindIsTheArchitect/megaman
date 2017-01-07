@@ -1,8 +1,8 @@
 I64 BgrState;
+I64 DocIncr;
 BgrState=0;
 
 U0 UpdateBgr() {
-    I64 DocIncr;
     switch(BgrState) {
         case 0:
         DocClear;

@@ -1,3 +1,5 @@
+I64 LFIncr, LMIncr, LYIncr;
+
 I64 MMDeath, MMDeathFlop, MMDeathInit, MMDeathX[13], MMDeathY[13];
 I64 MMEnDamage[8], MMEnDir[8], MMEnHealth[8], MMEnInit, MMEnState[8], MMEnType[8], MMEnX[8], MMEnY[8];
 I64 MMJump, MMJumpY;
@@ -8,16 +10,19 @@ I64 MMAct;
 I64 MMCrouch;
 I64 MMDir;
 I64 MMExit;
+I64 MMESCtr;
 I64 MMHealth;
 I64 MMPixScale;
+I64 MMPSCtr;
 I64 MMShoot;
 I64 MMSlide;
 I64 MMState;
 I64 MMVBase;
+I64 RMIncr, RMFlop;
+I64 TelY;
 U8 MMScanCode;
 
 U0 NewEnemy(I64 EnXX, I64 EnYY, I64 EnDamage, I64 EnDir, I64 EnHealth, I64 EnState, I64 EnType) {
-    I64 MMESCtr;
     for (MMESCtr=0;MMESCtr<8;MMESCtr++) {
         if (MMEnDir[MMESCtr]==-1) {
             MMEnDamage[MMESCtr] = EnDamage;
@@ -33,7 +38,6 @@ U0 NewEnemy(I64 EnXX, I64 EnYY, I64 EnDamage, I64 EnDir, I64 EnHealth, I64 EnSta
 };
 
 U0 NewProjectile(I64 ProjXX, I64 ProjYY, I64 ProjDir) {
-    I64 MMPSCtr;
     for (MMPSCtr=0;MMPSCtr<8;MMPSCtr++) {
         if (MMProjDir[MMPSCtr]==-1) {
             MMProjX[MMPSCtr] = ProjXX;
@@ -45,8 +49,6 @@ U0 NewProjectile(I64 ProjXX, I64 ProjYY, I64 ProjDir) {
 };
 
 U0 DrawEnemies() {
-    I64 MMESCtr;
-    I64 MMPSCtr;
     for (MMESCtr=0;MMESCtr<8;MMESCtr++) {
         if (MMEnState[MMESCtr]>-1) {
             for (MMPSCtr=0;MMPSCtr<8;MMPSCtr++) {
@@ -98,9 +100,6 @@ U0 DrawEnemies() {
 };
 
 U0 DrawMMLifeMeter() {
-    I64 LMIncr;
-    I64 LYIncr;
-    I64 LFIncr;
     Buffer->color = BLACK;
     GrRect(Buffer, 48, 32, 8*MMPixScale, 56*MMPixScale);
     Buffer->color = LTGRAY;
@@ -122,7 +121,6 @@ U0 DrawMMLifeMeter() {
 };
 
 U0 DrawProjectiles() {
-    I64 MMPSCtr;
     for (MMPSCtr=0;MMPSCtr<8;MMPSCtr++) {
         if (MMProjDir[MMPSCtr]>-1) {
             MMSprite(SPR_Megaman, MMProjX[MMPSCtr], MMProjY[MMPSCtr], ((32*0)*0), ((32*3)*3), ((32*0)*3)+24, ((32*3)*3)+24, 0);
@@ -135,7 +133,6 @@ U0 DrawProjectiles() {
 };
 
 U0 ReadyMsg() {
-    I64 RMIncr, RMFlop;
     RMFlop = 0;
     for (RMIncr=0;RMIncr<24;RMIncr++) {
         DCFill(Buffer, TRANSPARENT);
@@ -148,7 +145,6 @@ U0 ReadyMsg() {
 };
 
 U0 MMTeleportIn() {
-    I64 TelY;
     for (TelY=0;TelY<MMY;TelY+=48) {
         UpdateBgr;
         DCFill(Buffer, TRANSPARENT);
@@ -212,7 +208,6 @@ U0 InitGameSettings() {
 };
 
 U0 GameLoop() {
-    I64 MMESCtr;
     UpdateBgr;
     ReadyMsg;
     MMTeleportIn;

@@ -379,6 +379,7 @@ U0 GameLoop() {
 
 // Start Application.
 U0 MegaMan() {
+    LoadSprites;
     MMExit = 0;
     SettingsPush;
     WinMax;
@@ -397,6 +398,7 @@ U0 MegaMan() {
         GameLoop;
     };
     // Exit game.
+    FreeSprites;
     PaletteSetStd;
     DCFill(DCAlias(),TRANSPARENT);
     GrUpdateScrn;

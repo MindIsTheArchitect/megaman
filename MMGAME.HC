@@ -7,6 +7,7 @@ I64 MMX, MMY;
 I64 MMAct;
 I64 MMCrouch;
 I64 MMDir;
+I64 MMExit;
 I64 MMHealth;
 I64 MMPixScale;
 I64 MMShoot;
@@ -14,26 +15,6 @@ I64 MMSlide;
 I64 MMState;
 I64 MMVBase;
 U8 MMScanCode;
-
-U0 InitGameSettings() {
-    MMHealth = 56;
-    MMDeath = 0;
-    MMCrouch = 0;
-    MMState = 1;
-    MMAct = 0;
-    MMJump = 0;
-    MMHit = 0;
-    MMHitDir = 0;
-    MMHitFlop = 0;
-    MMSlide = 0;
-    MMShoot = 0;
-    MMJumpY = 0;
-    MMVBase = 20;
-    MMX = 0;
-    MMDir = 1;
-    MMPixScale = 3;
-    MMY = 320;
-};
 
 U0 NewEnemy(I64 EnXX, I64 EnYY, I64 EnDamage, I64 EnDir, I64 EnHealth, I64 EnState, I64 EnType) {
     I64 MMESCtr;
@@ -153,8 +134,88 @@ U0 DrawProjectiles() {
     };
 };
 
+U0 ReadyMsg() {
+    I64 RMIncr, RMFlop;
+    RMFlop = 0;
+    for (RMIncr=0;RMIncr<24;RMIncr++) {
+        DCFill(Buffer, TRANSPARENT);
+        if (RMFlop==0) { Text("READY", 262, 216, WHITE); }
+        RMFlop++;
+        if (RMFlop>1) { RMFlop = 0; };
+        GrUpdateScrn;
+        Sleep(60);
+    };
+};
+
+U0 MMTeleportIn() {
+    I64 TelY;
+    for (TelY=0;TelY<MMY;TelY+=48) {
+        UpdateBgr;
+        DCFill(Buffer, TRANSPARENT);
+        MMSprite(SPR_Megaman, MMX, TelY, ((32*3)*5), ((32*3)*0), ((32*3)*6)-1, ((32*3)*1)-1, MMDir);
+        DrawMMLifeMeter;
+        GrUpdateScrn;
+        Sleep(0);
+    };
+
+    Sfx(SFX_MMTELIN);
+    UpdateBgr; 
+    DCFill(Buffer, TRANSPARENT);
+    MMSprite(SPR_Megaman, MMX, MMY-MMJumpY, ((32*3)*5), ((32*3)*1)+2, ((32*3)*6)-1, ((32*3)*2)-1, MMDir);
+    DrawMMLifeMeter;
+    GrUpdateScrn;
+    Sleep(0);
+
+    UpdateBgr; 
+    DCFill(Buffer, TRANSPARENT);
+    MMSprite(SPR_Megaman, MMX, MMY-MMJumpY, ((32*3)*5), ((32*3)*2)+2, ((32*3)*6)-1, ((32*3)*3)-1, MMDir);
+    DrawMMLifeMeter;
+    GrUpdateScrn;
+    Sleep(0);
+
+    UpdateBgr; 
+    DCFill(Buffer, TRANSPARENT);
+    MMSprite(SPR_Megaman, MMX, MMY-MMJumpY, ((32*3)*5), ((32*3)*0), ((32*3)*6)-1, ((32*3)*1)-1, MMDir);
+    DrawMMLifeMeter;
+    GrUpdateScrn;
+    Sleep(0);
+};
+
+U0 InitGameSettings() {
+    MMHealth = 56;
+    MMDeath = 0;
+    MMExit = 0;
+    MMCrouch = 0;
+    MMState = 1;
+    MMAct = 0;
+    MMJump = 0;
+    MMHit = 0;
+    MMHitDir = 0;
+    MMHitFlop = 0;
+    MMSlide = 0;
+    MMShoot = 0;
+    MMJumpY = 0;
+    MMVBase = 24;
+    MMX = 240;
+    MMDir = 1;
+    MMPixScale = 3;
+    MMY = 320;
+    // Clear projectiles.
+    for (MMProjInit=0;MMProjInit<8;MMProjInit++) { MMProjX[MMProjInit]=0; MMProjY[MMProjInit]=0; MMProjDir[MMProjInit]=-1; };
+    // Clear enemies.
+    for (MMEnInit=0;MMEnInit<8;MMEnInit++) { MMEnX[MMEnInit]=0; MMEnY[MMEnInit]=0; MMEnDir[MMEnInit]=-1; MMEnState[MMEnInit]=-1; MMEnHealth[MMEnInit]=-1; };
+    // Set Mega Man default state.
+    MMState = 1;
+    // Spawn some "evil" Mega Men on the playfield.
+    NewEnemy(MMX+(16*MMPixScale)+(48*MMPixScale), ((MMY-MMJumpY)+(3*MMPixScale)+(8*MMPixScale))-8, 3, 0, 10, 1, 0);
+    NewEnemy(MMX+(48*MMPixScale)+(48*MMPixScale), ((MMY-MMJumpY)-(3*MMPixScale)+(8*MMPixScale))-8, 3, 0, 10, 1, 0);
+};
+
 U0 GameLoop() {
     I64 MMESCtr;
+    UpdateBgr;
+    ReadyMsg;
+    MMTeleportIn;
     while (TRUE) {
         UpdateBgr;
         DCFill(Buffer, TRANSPARENT);
@@ -233,7 +294,7 @@ U0 GameLoop() {
         if(MMShoot>4) { MMShoot = 0; if(MMState==0) { MMState = 1; }; };
         if(MMJump>1) { MMJumpY = MMVBase * MMJump; };
         if(MMJump>8) { MMJumpY = (MMVBase * 8) + ((MMVBase * 8) - (MMVBase * MMJump)); };
-        if(MMJump>16) { MMJump = 0; if(MMState==0) { MMState = 1; }; };
+        if(MMJump>16) { MMJump = 0; MMJumpY = 0; if(MMState==0) { MMState = 1; }; };
         if(MMState>9 & MMState<14) {
             if (MMDir==0) { if (MMX>MMVBase) { MMX -= (MMVBase+(MMSlide*2)); }; };
             if (MMDir==1) { if (MMX<500) { MMX += (MMVBase+(MMSlide*2)); }; };
@@ -284,7 +345,7 @@ U0 GameLoop() {
         };
         MMAct = 0;
         MMScanCode = InU8(0x60);
-        if (MMScanCode==0x01) { break; };
+        if (MMScanCode==0x01) { MMExit = 1; break; };
         if (MMScanCode==0x1d) {
             if (MMSlide==0 && MMHit==0 && MMDeath==0) {
                 MMAct = 1;
@@ -323,6 +384,7 @@ U0 GameLoop() {
 
 // Start Application.
 U0 MegaMan() {
+    MMExit = 0;
     SettingsPush;
     WinMax;
     AutoComplete;
@@ -330,22 +392,15 @@ U0 MegaMan() {
     WinBorder;
     MsSet(639,479,0);
     GameSetPalette;
-    InitGameSettings;
     DCFill(Buffer,BLACK);
     Text("MEGA MAN FOR TEMPLEOS", 64, 224, WHITE);
     Text("   PRESS ENTER KEY", 64, 256, WHITE);
     PressAKey;
-    DCFill(Buffer,BLACK);
-    // Clear projectiles.
-    for (MMProjInit=0;MMProjInit<8;MMProjInit++) { MMProjX[MMProjInit]=0; MMProjY[MMProjInit]=0; MMProjDir[MMProjInit]=-1; };
-    // Clear enemies.
-    for (MMEnInit=0;MMEnInit<8;MMEnInit++) { MMEnX[MMEnInit]=0; MMEnY[MMEnInit]=0; MMEnDir[MMEnInit]=-1; MMEnState[MMEnInit]=-1; MMEnHealth[MMEnInit]=-1; };
-    // Set Mega Man default state.
-    MMState = 1;
-    // Spawn some "evil" Mega Men on the playfield.
-    NewEnemy(MMX+(16*MMPixScale)+(48*MMPixScale), ((MMY-MMJumpY)+(3*MMPixScale)+(8*MMPixScale))-8, 3, 0, 10, 1, 0);
-    NewEnemy(MMX+(48*MMPixScale)+(48*MMPixScale), ((MMY-MMJumpY)-(3*MMPixScale)+(8*MMPixScale))-8, 3, 0, 10, 1, 0);
-    GameLoop;
+    while (MMExit==0) {
+        InitGameSettings;
+        DCFill(Buffer,BLACK);
+        GameLoop;
+    };
     // Exit game.
     PaletteSetStd;
     DCFill(DCAlias(),TRANSPARENT);

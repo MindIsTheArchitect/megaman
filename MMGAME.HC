@@ -182,6 +182,13 @@ U0 MMTeleportIn() {
 };
 
 U0 InitGameSettings() {
+    BgrIncrX=0;
+    BgrIncrY=0;
+    BgrMapPosX=0;
+    BgrMapPosY=0;
+    BgrScrollPosX=0;
+    BgrScrollPosY=0;
+    BgrState=0;
     BufferClipX = 0;
     BufferClipY = 0;
     MMHealth = 56;
@@ -307,13 +314,13 @@ U0 GameLoop() {
 
             if (MMDir==0) {
                 if(MMX>MMXBound) { MMX -= (MMVBase+(MMSlide*2)); };
-                if(MMX<=MMXBound && BufferClipX>0) { BufferClipX -= (MMVBase+(MMSlide*2)); BgrIncrS += 6; };
+                if(MMX<=MMXBound && BufferClipX>0) { BufferClipX -= (MMVBase+(MMSlide*2)); BgrScrollPosX -= 12; };
                 if(MMX<=MMXBound && BufferClipX<=0 && MMX>0) { MMX -= (MMVBase+(MMSlide*2)); };
             };
 
             if (MMDir==1) {
                 if(MMX<MMXBound) { MMX += (MMVBase+(MMSlide*2)); };
-                if(MMX>=MMXBound && BufferClipX<MMXMax) { BufferClipX += (MMVBase+(MMSlide*2)); BgrIncrS -= 6; };
+                if(MMX>=MMXBound && BufferClipX<MMXMax) { BufferClipX += (MMVBase+(MMSlide*2)); BgrScrollPosX += 12; };
                 if(MMX>=MMXBound && BufferClipX>=MMXMax && MMX < 520) { MMX += (MMVBase+(MMSlide*2)); };
             };
 
@@ -428,6 +435,10 @@ U0 MegaMan() {
         InitGameSettings;
         DCFill(Buffer,BLACK);
         GameLoop;
+        // BgrTileTest;
+        GrUpdateScrn;
+        // PressAKey;
+        // MMExit = 1;
     };
     // Exit game.
     FreeSprites;

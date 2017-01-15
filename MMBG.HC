@@ -1,16 +1,60 @@
+I64 BgrIncrX, BgrIncrY;
 I64 BgrState;
-I64 BgrIncrS, BgrIncrX, BgrIncrY;
+I64 BgrMapPosX, BgrMapPosY;
+I64 BgrScrollPosX, BgrScrollPosY;
+U8 *BgrMap[20];
 
-BgrIncrS=0;
-BgrState=0;
+BgrMap[00] = "....................................................";
+BgrMap[01] = "..=====.=====.==.==.====..=.....=====..===...====...";
+BgrMap[02] = "....=...=.....=====.=...=.=.....=.....=...=.=.......";
+BgrMap[03] = "....=...===...=.=.=.====..=.....===...=...=..===....";
+BgrMap[04] = "....=...=.....=...=.=.....=.....=.....=...=.....=...";
+BgrMap[05] = "....=...=====.=...=.=.....=====.=====..===..====....";
+BgrMap[06] = "....................................................";
+BgrMap[07] = "....................................................";
+BgrMap[08] = "0000000000000000000000....00000000000000000000000000";
+BgrMap[09] = "0000000000000000000000....00000000000000000000000000";
+BgrMap[10] = "....................................................";
+BgrMap[11] = "....................................................";
+BgrMap[12] = "....................................................";
+BgrMap[13] = "....................................................";
+BgrMap[14] = "....................................................";
+BgrMap[15] = "....................................................";
+BgrMap[16] = "....................................................";
+BgrMap[17] = "0000000000000000000000....00000000000000000000000000";
+BgrMap[18] = "0000000000000000000000....00000000000000000000000000";
+BgrMap[19] = "0000000000000000000000....00000000000000000000000000";
 
 U0 UpdateBgr() {
-    if (BgrIncrS>24) { BgrIncrS -= 24; };
-    if (BgrIncrS<0) { BgrIncrS += 24; };
-    DCFill(Buffer, DKGRAY);
-    for (BgrIncrY=480-(24*4);BgrIncrY<480;BgrIncrY += 24) {
-        for (BgrIncrX=-48;BgrIncrX<640+48;BgrIncrX += 24) {
-            MMSprite(SPR_Tiles, 0, BgrIncrX+BgrIncrS, BgrIncrY, 255, 0, 255+47, 0+47, 0);
-        };
-    };
+	
+	BgrIncrX=0;
+	BgrIncrY=0;
+
+	BgrMapPosX=BgrScrollPosX/48;
+	BgrMapPosY=0;
+	
+	DCFill(Buffer, DKGRAY);
+
+	while (BgrIncrY<(48*20)) {
+		BgrIncrX = 0;
+		while (BgrIncrX<(48*26)) {
+			switch (BgrMap[BgrMapPosY][BgrMapPosX]) {
+				case 0x30:
+					MMSprite(SPR_Tiles, 0, BgrIncrX - (BgrScrollPosX % 48), BgrIncrY, 255, 0, 255+47, 0+47, 0);
+					break;
+				case 0x3D:
+					MMSprite(SPR_Tiles, 0, BgrIncrX - (BgrScrollPosX % 48), BgrIncrY, 455, 0, 455+47, 0+47, 0);
+					break;
+
+			};
+			BgrIncrX += 48;
+			BgrMapPosX++;
+			if (BgrMapPosX>(BgrScrollPosX/48)+25) {
+				BgrMapPosX = BgrScrollPosX/48;
+				BgrMapPosY++;
+			};
+		};
+		BgrIncrY += 48;
+	};
+
 };

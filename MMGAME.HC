@@ -1,7 +1,7 @@
 I64 BufferClipX;
 I64 BufferClipY;
 I64 LFIncr, LMIncr, LYIncr;
-I64 MMDeath, MMDeathFlop, MMDeathInit, MMDeathX[13], MMDeathY[13];
+I64 MMDeath, MMDeathFlop, MMDeathPit, MMDeathInit, MMDeathX[13], MMDeathY[13];
 I64 MMEnDamage[8], MMEnDir[8], MMEnHealth[8], MMEnInit, MMEnState[8], MMEnType[8], MMEnX[8], MMEnY[8];
 I64 MMJump, MMJumpY;
 I64 MMHit, MMHitDir, MMHitFlop;
@@ -91,7 +91,8 @@ U0 DrawEnemies() {
                 if (MMEnX[MMESCtr] >= 8) { MMEnX[MMESCtr] -= 8; } else { MMEnDir[MMESCtr] = 1; };
                 break;
                 case 1:
-                if (GetTilesBot(MMEnX[MMESCtr], MMEnY[MMESCtr]) != 0x2E2E) { MMEnX[MMESCtr] += 8; } else { MMEnDir[MMESCtr] = 0; };
+                // if (GetTilesBot(MMEnX[MMESCtr], MMEnY[MMESCtr]) != 0x2E2E) { MMEnX[MMESCtr] += 8; } else { MMEnDir[MMESCtr] = 0; };
+                if (MMEnX[MMESCtr] <= 1536) { MMEnX[MMESCtr] += 8; } else { MMEnDir[MMESCtr] = 0; };
                 break;
             };
             MMEnState[MMESCtr]++;
@@ -266,6 +267,7 @@ U0 InitGameSettings() {
     MMInvCtr = 0;
     MMInvFlop = 0;
     MMDeath = 0;
+    MMDeathPit = 0;
     MMExit = 0;
     MMCrouch = 0;
     MMState = 1;
@@ -315,6 +317,7 @@ U0 GameLoop() {
                                 for(MMDeathInit=0;MMDeathInit<12;MMDeathInit++) { MMDeathX[MMDeathInit] = MMX; MMDeathY[MMDeathInit] = MMY-MMJumpY; }
                                 Sfx(SFX_MMDEATH);
                                 MMDeath=1;
+                                MMDeathPit=0;
                                 MMState=99;
                                 MMHit=0;
                                 MMJump=0;
@@ -371,7 +374,7 @@ U0 GameLoop() {
             MMShoot += 1;
         };
         if(MMShoot>4) { MMShoot = 0; if(MMState==0) { MMState = 1; }; };
-        if (MMJump==0) { if (GetTilesBot(MMX, MMY-MMJumpY) == 0x2E2E) { MMSlide = 0; MMJump = 2; }; };
+        if (MMJump==0 && MMDeath==0) { if (GetTilesBot(MMX, MMY-MMJumpY) == 0x2E2E) { MMSlide = 0; MMJump = 2; }; };
         if (MMJump==1) {
             MMJumpY += 48;
             if(MMJumpY>224) { MMSlide = 0; MMJump = 2; };
@@ -382,14 +385,19 @@ U0 GameLoop() {
                 for(MMDeathInit=0;MMDeathInit<12;MMDeathInit++) { MMDeathX[MMDeathInit] = -999; MMDeathY[MMDeathInit] = -999; }
                 Sfx(SFX_MMDEATH);
                 MMDeath=1;
+                MMDeathPit=1;
                 MMState=99;
                 MMHit=0;
                 MMJump=0;
                 MMShoot=0;
                 MMDeathFlop=0;
-                break;
+                MMSlide=0;
+                MMShoot=0;
+                MMHitDir = 0;
+                MMX=0;
+                MMY=0;
             };
-            if (GetTilesBot(MMX, MMY-MMJumpY) == 0x2E2E) {
+            if (MMJump == 2 && GetTilesBot(MMX, MMY-MMJumpY) == 0x2E2E) {
                 MMJumpY -= 48;
                 } else {
                 MMJump = 0;

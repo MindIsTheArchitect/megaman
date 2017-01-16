@@ -1,8 +1,6 @@
 I64 BufferClipX;
 I64 BufferClipY;
-
 I64 LFIncr, LMIncr, LYIncr;
-
 I64 MMDeath, MMDeathFlop, MMDeathInit, MMDeathX[13], MMDeathY[13];
 I64 MMEnDamage[8], MMEnDir[8], MMEnHealth[8], MMEnInit, MMEnState[8], MMEnType[8], MMEnX[8], MMEnY[8];
 I64 MMJump, MMJumpY;
@@ -23,13 +21,10 @@ I64 MMShoot;
 I64 MMSlide;
 I64 MMState;
 I64 MMVBase;
-
 I64 RMIncr, RMFlop;
 I64 SysTimerCnt;
 I64 TelY;
-
 U8 MMScanCode;
-
 U0 NewEnemy(I64 EnXX, I64 EnYY, I64 EnDamage, I64 EnDir, I64 EnHealth, I64 EnState, I64 EnType) {
     for (MMESCtr=0;MMESCtr<8;MMESCtr++) {
         if (MMEnDir[MMESCtr]==-1) {
@@ -44,7 +39,6 @@ U0 NewEnemy(I64 EnXX, I64 EnYY, I64 EnDamage, I64 EnDir, I64 EnHealth, I64 EnSta
         };
     };
 };
-
 U0 NewProjectile(I64 ProjXX, I64 ProjYY, I64 ProjDir) {
     for (MMPSCtr=0;MMPSCtr<8;MMPSCtr++) {
         if (MMProjDir[MMPSCtr]==-1) {
@@ -55,7 +49,6 @@ U0 NewProjectile(I64 ProjXX, I64 ProjYY, I64 ProjDir) {
         };
     };
 };
-
 U0 DrawEnemies() {
     for (MMESCtr=0;MMESCtr<8;MMESCtr++) {
         if (MMEnX[MMESCtr]>=BufferClipX && MMEnY[MMESCtr]>=BufferClipY && MMEnX[MMESCtr]<(BufferClipX+640) && MMEnY[MMESCtr]<(BufferClipY+480)) {
@@ -74,39 +67,123 @@ U0 DrawEnemies() {
                 };
                 switch(MMEnType[MMESCtr]) {
                     case 0:
-                        switch(MMEnState[MMESCtr]) {
-                            case 1:
-                            MMSprite(SPR_Evilman, 0, MMEnX[MMESCtr]-BufferClipX, MMEnY[MMESCtr]-BufferClipY, ((32*3)*1), ((32*3)*0), ((32*3)*2)-1, ((32*3)*1)-1, MMEnDir[   MMESCtr]);
-                                break;
-                            case 2:
-                            MMSprite(SPR_Evilman, 0, MMEnX[MMESCtr]-BufferClipX, MMEnY[MMESCtr]-BufferClipY, ((32*3)*2), ((32*3)*0), ((32*3)*3)-1, ((32*3)*1)-1, MMEnDir[   MMESCtr]);
-                                break;
-                            case 3:
-                            MMSprite(SPR_Evilman, 0, MMEnX[MMESCtr]-BufferClipX, MMEnY[MMESCtr]-BufferClipY, ((32*3)*3), ((32*3)*0), ((32*3)*4)-1, ((32*3)*1)-1, MMEnDir[   MMESCtr]);
-                                break;
-                            case 4:
-                            MMSprite(SPR_Evilman, 0, MMEnX[MMESCtr]-BufferClipX, MMEnY[MMESCtr]-BufferClipY, ((32*3)*2), ((32*3)*0), ((32*3)*3)-1, ((32*3)*1)-1, MMEnDir[   MMESCtr]);
-                                break;
-                        };
+                    switch(MMEnState[MMESCtr]) {
+                        case 1:
+                        MMSprite(SPR_Evilman, 0, MMEnX[MMESCtr]-BufferClipX, MMEnY[MMESCtr]-BufferClipY, ((32*3)*1), ((32*3)*0), ((32*3)*2)-1, ((32*3)*1)-1, MMEnDir[   MMESCtr]);
                         break;
+                        case 2:
+                        MMSprite(SPR_Evilman, 0, MMEnX[MMESCtr]-BufferClipX, MMEnY[MMESCtr]-BufferClipY, ((32*3)*2), ((32*3)*0), ((32*3)*3)-1, ((32*3)*1)-1, MMEnDir[   MMESCtr]);
+                        break;
+                        case 3:
+                        MMSprite(SPR_Evilman, 0, MMEnX[MMESCtr]-BufferClipX, MMEnY[MMESCtr]-BufferClipY, ((32*3)*3), ((32*3)*0), ((32*3)*4)-1, ((32*3)*1)-1, MMEnDir[   MMESCtr]);
+                        break;
+                        case 4:
+                        MMSprite(SPR_Evilman, 0, MMEnX[MMESCtr]-BufferClipX, MMEnY[MMESCtr]-BufferClipY, ((32*3)*2), ((32*3)*0), ((32*3)*3)-1, ((32*3)*1)-1, MMEnDir[   MMESCtr]);
+                        break;
+                    };
+                    break;
                 };
             };
         };
         if (MMEnState[MMESCtr]>0) {
             switch(MMEnDir[MMESCtr]) {
                 case 0:
-                    if (MMEnX[MMESCtr] >= 8) { MMEnX[MMESCtr] -= 4; } else { MMEnDir[MMESCtr] = 1; };
-                    break;
+                if (MMEnX[MMESCtr] >= 8) { MMEnX[MMESCtr] -= 8; } else { MMEnDir[MMESCtr] = 1; };
+                break;
                 case 1:
-                    if (MMEnX[MMESCtr] <= MMXMax) { MMEnX[MMESCtr] += 4; } else { MMEnDir[MMESCtr] = 0; };
-                    break;
+                if (GetTilesBot(MMEnX[MMESCtr], MMEnY[MMESCtr]) != 0x2E2E) { MMEnX[MMESCtr] += 8; } else { MMEnDir[MMESCtr] = 0; };
+                break;
             };
             MMEnState[MMESCtr]++;
             if (MMEnState[MMESCtr]>4) { MMEnState[MMESCtr] = 1; };
         };
     };
 };
-
+U8 H2N16(U8 _hb) {
+    switch(_hb) {
+        case 0x0:
+        return "0";
+        break;
+        case 0x1:
+        return "1";
+        break;
+        case 0x2:
+        return "2";
+        break;
+        case 0x3:
+        return "3";
+        break;
+        case 0x4:
+        return "4";
+        break;
+        case 0x5:
+        return "5";
+        break;
+        case 0x6:
+        return "6";
+        break;
+        case 0x7:
+        return "7";
+        break;
+        case 0x8:
+        return "8";
+        break;
+        case 0x9:
+        return "9";
+        break;
+        case 0xA:
+        return "A";
+        break;
+        case 0xB:
+        return "B";
+        break;
+        case 0xC:
+        return "C";
+        break;
+        case 0xD:
+        return "D";
+        break;
+        case 0xE:
+        return "E";
+        break;
+        case 0xF:
+        return "F";
+        break;
+    };
+    return " ";
+};
+U0 DrawDebugText(Bool _debug) {
+    if (!_debug) { return; };
+    I64 DbgB, DbgH, DbgL;
+    DbgB = MMX / 256; DbgH = DbgB / 16; DbgL = DbgB & 0x0F;
+    Text("X", 100, 32, LTPURPLE);
+    Text(H2N16(DbgH), 150, 32, LTPURPLE);
+    Text(H2N16(DbgL), 175, 32, LTPURPLE);
+    DbgB = MMX & 0xFF; DbgH = DbgB / 16; DbgL = DbgB & 0x0F;
+    Text(H2N16(DbgH), 200, 32, LTPURPLE);
+    Text(H2N16(DbgL), 225, 32, LTPURPLE);
+    DbgB = (MMY-MMJumpY) / 256; DbgH = DbgB / 16; DbgL = DbgB & 0x0F;
+    Text("Y", 100, 60, LTPURPLE);
+    Text(H2N16(DbgH), 150, 60, LTPURPLE);
+    Text(H2N16(DbgL), 175, 60, LTPURPLE);
+    DbgB = (MMY-MMJumpY) & 0xFF; DbgH = DbgB / 16; DbgL = DbgB & 0x0F;
+    Text(H2N16(DbgH), 200, 60, LTPURPLE);
+    Text(H2N16(DbgL), 225, 60, LTPURPLE);
+    DbgB = GetTilesTop(MMX, MMY-MMJumpY) /  256; DbgH = DbgB / 16; DbgL = DbgB & 0x0F;
+    Text("TT", 100, 88, LTPURPLE);
+    Text(H2N16(DbgH), 150, 88, LTPURPLE);
+    Text(H2N16(DbgL), 175, 88, LTPURPLE);
+    DbgB = GetTilesTop(MMX, MMY-MMJumpY) & 0xFF; DbgH = DbgB / 16; DbgL = DbgB & 0x0F;
+    Text(H2N16(DbgH), 200, 88, LTPURPLE);
+    Text(H2N16(DbgL), 225, 88, LTPURPLE);
+    DbgB = GetTilesBot(MMX, MMY-MMJumpY) /  256; DbgH = DbgB / 16; DbgL = DbgB & 0x0F;
+    Text("TB", 100, 116, LTPURPLE);
+    Text(H2N16(DbgH), 150, 116, LTPURPLE);
+    Text(H2N16(DbgL), 175, 116, LTPURPLE);
+    DbgB = GetTilesBot(MMX, MMY-MMJumpY) & 0xFF; DbgH = DbgB / 16; DbgL = DbgB & 0x0F;
+    Text(H2N16(DbgH), 200, 116, LTPURPLE);
+    Text(H2N16(DbgL), 225, 116, LTPURPLE);
+};
 U0 DrawMMLifeMeter() {
     Buffer->color = BLACK;
     GrRect(Buffer, 48, 32, 8*MMPixScale, 56*MMPixScale);
@@ -127,7 +204,6 @@ U0 DrawMMLifeMeter() {
         LMIncr -= MMPixScale*2;
     };
 };
-
 U0 DrawProjectiles() {
     for (MMPSCtr=0;MMPSCtr<8;MMPSCtr++) {
         if (MMProjDir[MMPSCtr]>-1) {
@@ -139,7 +215,6 @@ U0 DrawProjectiles() {
         };
     };
 };
-
 U0 ReadyMsg() {
     RMFlop = 0;
     for (RMIncr=0;RMIncr<24;RMIncr++) {
@@ -151,7 +226,6 @@ U0 ReadyMsg() {
         Sleep(60);
     };
 };
-
 U0 MMTeleportIn() {
     for (TelY=0;TelY<MMY;TelY+=48) {
         UpdateBgr;
@@ -160,32 +234,29 @@ U0 MMTeleportIn() {
         GrUpdateScrn;
         Sleep(0);
     };
-
     Sfx(SFX_MMTELIN);
-    UpdateBgr; 
+    UpdateBgr;
     MMSprite(SPR_Megaman, MMInvFlop, MMX, MMY-MMJumpY, ((32*3)*5), ((32*3)*1)+2, ((32*3)*6)-1, ((32*3)*2)-1, MMDir);
     DrawMMLifeMeter;
     GrUpdateScrn;
     Sleep(0);
-
-    UpdateBgr; 
+    UpdateBgr;
     MMSprite(SPR_Megaman, MMInvFlop, MMX, MMY-MMJumpY, ((32*3)*5), ((32*3)*2)+2, ((32*3)*6)-1, ((32*3)*3)-1, MMDir);
     DrawMMLifeMeter;
     GrUpdateScrn;
     Sleep(0);
-
-    UpdateBgr; 
+    UpdateBgr;
     MMSprite(SPR_Megaman, MMInvFlop, MMX, MMY-MMJumpY, ((32*3)*5), ((32*3)*0), ((32*3)*6)-1, ((32*3)*1)-1, MMDir);
     DrawMMLifeMeter;
     GrUpdateScrn;
     Sleep(0);
 };
-
 U0 InitGameSettings() {
     BgrIncrX=0;
     BgrIncrY=0;
     BgrMapPosX=0;
     BgrMapPosY=0;
+    BgrMapStartPosY=4;
     BgrScrollPosX=0;
     BgrScrollPosY=0;
     BgrState=0;
@@ -208,8 +279,8 @@ U0 InitGameSettings() {
     MMJumpY = 0;
     MMVBase = 24;
     MMX = 240;
-    MMXBound = 300; 
-    MMXMax = 1280; 
+    MMXBound = 300;
+    MMXMax = 3640;
     MMDir = 1;
     MMPixScale = 3;
     MMY = 311;
@@ -223,7 +294,6 @@ U0 InitGameSettings() {
     NewEnemy(MMX+(16*MMPixScale)+(48*MMPixScale), MMY, 15, 0, 10, 1, 0);
     NewEnemy(MMX+(128*MMPixScale)+(48*MMPixScale), MMY, 15, 0, 10, 1, 0);
 };
-
 U0 GameLoop() {
     UpdateBgr;
     ReadyMsg;
@@ -291,10 +361,7 @@ U0 GameLoop() {
         };
         if(MMHit>0) {
             MMHit += 2;
-            if (MMHitDir==0) { MMX += 4; };
-            if (MMHitDir==1) { MMX -= 4; };
         };
-        if(MMJump>0) { MMJump += 2; };
         if(MMSlide>0) { MMSlide += 2; };
         if(MMShoot>0) {
             if(MMShoot==1) {
@@ -304,26 +371,44 @@ U0 GameLoop() {
             MMShoot += 1;
         };
         if(MMShoot>4) { MMShoot = 0; if(MMState==0) { MMState = 1; }; };
-        if(MMJump>1) { MMJumpY = MMVBase * MMJump; };
-        if(MMJump>8) { MMJumpY = (MMVBase * 8) + ((MMVBase * 8) - (MMVBase * MMJump)); };
-        if(MMJump>16) { MMJump = 0; MMJumpY = 0; if(MMState==0) { MMState = 1; }; };
+        if (MMJump==0) { if (GetTilesBot(MMX, MMY-MMJumpY) == 0x2E2E) { MMSlide = 0; MMJump = 2; }; };
+        if (MMJump==1) {
+            MMJumpY += 48;
+            if(MMJumpY>224) { MMSlide = 0; MMJump = 2; };
+            if(MMJumpY>96 && (InU8(0x60) != 0x38)) { MMSlide = 0; MMJump = 2; };
+        };
+        if (MMJump==2) {
+            if (MMY-MMJumpY>480) {
+                for(MMDeathInit=0;MMDeathInit<12;MMDeathInit++) { MMDeathX[MMDeathInit] = -999; MMDeathY[MMDeathInit] = -999; }
+                Sfx(SFX_MMDEATH);
+                MMDeath=1;
+                MMState=99;
+                MMHit=0;
+                MMJump=0;
+                MMShoot=0;
+                MMDeathFlop=0;
+                break;
+            };
+            if (GetTilesBot(MMX, MMY-MMJumpY) == 0x2E2E) {
+                MMJumpY -= 48;
+                } else {
+                MMJump = 0;
+                MMY = MMY-(48 * (MMJumpY / 48));
+                MMJumpY = 0;
+                if(MMState==0) { MMState = 1; };
+            };
+        };
         if(MMState>9 & MMState<14) {
-
-            // if (MMDir==0) { if (MMX>MMVBase) { MMX -= (MMVBase+(MMSlide*2)); }; };
-            // if (MMDir==1) { if (MMX<500) { MMX += (MMVBase+(MMSlide*2)); }; };
-
             if (MMDir==0) {
-                if(MMX>MMXBound) { MMX -= (MMVBase+(MMSlide*2)); };
-                if(MMX<=MMXBound && BufferClipX>0) { BufferClipX -= (MMVBase+(MMSlide*2)); BgrScrollPosX -= 12; };
-                if(MMX<=MMXBound && BufferClipX<=0 && MMX>0) { MMX -= (MMVBase+(MMSlide*2)); };
+                if(MMX>MMXBound) { MMX -= (MMVBase+(MMSlide*0)); };
+                if(MMX<=MMXBound && BufferClipX>0) { BufferClipX -= (MMVBase+(MMSlide*0)); BgrScrollPosX -= 12; };
+                if(MMX<=MMXBound && BufferClipX<=0 && MMX>0) { MMX -= (MMVBase+(MMSlide*0)); };
             };
-
             if (MMDir==1) {
-                if(MMX<MMXBound) { MMX += (MMVBase+(MMSlide*2)); };
-                if(MMX>=MMXBound && BufferClipX<MMXMax) { BufferClipX += (MMVBase+(MMSlide*2)); BgrScrollPosX += 12; };
-                if(MMX>=MMXBound && BufferClipX>=MMXMax && MMX < 520) { MMX += (MMVBase+(MMSlide*2)); };
+                if(MMX<MMXBound) { MMX += (MMVBase+(MMSlide*0)); };
+                if(MMX>=MMXBound && BufferClipX<MMXMax) { BufferClipX += (MMVBase+(MMSlide*0)); BgrScrollPosX += 12; };
+                if(MMX>=MMXBound && BufferClipX>=MMXMax && MMX < 520) { MMX += (MMVBase+(MMSlide*0)); };
             };
-
         };
         if (MMJump>0) {
             if(MMShoot==0) {  MMSprite(SPR_Megaman, MMInvFlop, MMX, MMY-MMJumpY, ((32*3)*4), ((32*3)*0), ((32*3)*5)-1, ((32*3)*1)-1, MMDir); };
@@ -409,13 +494,13 @@ U0 GameLoop() {
         };
         if (MMInvCtr>48) { MMInvCtr = 0; MMInvFlop = 0; };
         DrawMMLifeMeter;
+        DrawDebugText(FALSE);
         GrUpdateScrn;
         while (SysTimerRead<SysTimerCnt+60000) {
             Sleep(0);
         };
     };
 };
-
 // Start Application.
 U0 MegaMan() {
     LoadSprites;
@@ -435,10 +520,7 @@ U0 MegaMan() {
         InitGameSettings;
         DCFill(Buffer,BLACK);
         GameLoop;
-        // BgrTileTest;
         GrUpdateScrn;
-        // PressAKey;
-        // MMExit = 1;
     };
     // Exit game.
     FreeSprites;

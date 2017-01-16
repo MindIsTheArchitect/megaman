@@ -11,7 +11,7 @@ U0 Text(U8 *_Text, I64 ScrOffsetX, I64 ScrOffsetY, I64 _Color) {
         // Numeric
         if(_Text[TextOffset]>0x29 && _Text[TextOffset]<0x40) { MMFontOffsetX = 24*(_Text[TextOffset]-0x30); MMFontOffsetY = 0; };
         if(_Text[TextOffset]>0x33 && _Text[TextOffset]<0x38) { MMFontOffsetX += 2; };
-        if(_Text[TextOffset]>0x37 && _Text[TextOffset]<0x40) { MMFontOffsetX += 4; };
+        if(_Text[TextOffset]>0x37 && _Text[TextOffset]<0x40) { MMFontOffsetX += 5; };
         // Alpha
         if(_Text[TextOffset]>0x40 && _Text[TextOffset]<0x5B) { MMFontOffsetX = 24*(_Text[TextOffset]-0x41); MMFontOffsetY = 27; };
         if(_Text[TextOffset]>0x51 && _Text[TextOffset]<0x5B) { MMFontOffsetX += 2; };

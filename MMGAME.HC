@@ -7,6 +7,7 @@ I64 MMJump, MMJumpY;
 I64 MMHit, MMHitDir, MMHitFlop;
 I64 MMInvCtr;
 I64 MMInvFlop;
+I64 MMObsH, MMObsL;
 I64 MMProjDir[8], MMProjInit, MMProjX[8], MMProjY[8];
 I64 MMX, MMXBound, MMXMax, MMY;
 I64 MMAct;
@@ -91,8 +92,7 @@ U0 DrawEnemies() {
                 if (MMEnX[MMESCtr] >= 8) { MMEnX[MMESCtr] -= 8; } else { MMEnDir[MMESCtr] = 1; };
                 break;
                 case 1:
-                // if (GetTilesBot(MMEnX[MMESCtr], MMEnY[MMESCtr]) != 0x2E2E) { MMEnX[MMESCtr] += 8; } else { MMEnDir[MMESCtr] = 0; };
-                if (MMEnX[MMESCtr] <= 1536) { MMEnX[MMESCtr] += 8; } else { MMEnDir[MMESCtr] = 0; };
+                if (MMEnX[MMESCtr] <= 1200) { MMEnX[MMESCtr] += 8; } else { MMEnDir[MMESCtr] = 0; };
                 break;
             };
             MMEnState[MMESCtr]++;
@@ -157,33 +157,40 @@ U0 DrawDebugText(Bool _debug) {
     if (!_debug) { return; };
     I64 DbgB, DbgH, DbgL;
     DbgB = MMX / 256; DbgH = DbgB / 16; DbgL = DbgB & 0x0F;
-    Text("X", 100, 32, LTPURPLE);
-    Text(H2N16(DbgH), 150, 32, LTPURPLE);
-    Text(H2N16(DbgL), 175, 32, LTPURPLE);
+    Text("X", 100, 32, LTRED);
+    Text(H2N16(DbgH), 150, 32, LTRED);
+    Text(H2N16(DbgL), 175, 32, LTRED);
     DbgB = MMX & 0xFF; DbgH = DbgB / 16; DbgL = DbgB & 0x0F;
-    Text(H2N16(DbgH), 200, 32, LTPURPLE);
-    Text(H2N16(DbgL), 225, 32, LTPURPLE);
+    Text(H2N16(DbgH), 200, 32, LTRED);
+    Text(H2N16(DbgL), 225, 32, LTRED);
     DbgB = (MMY-MMJumpY) / 256; DbgH = DbgB / 16; DbgL = DbgB & 0x0F;
-    Text("Y", 100, 60, LTPURPLE);
-    Text(H2N16(DbgH), 150, 60, LTPURPLE);
-    Text(H2N16(DbgL), 175, 60, LTPURPLE);
+    Text("Y", 100, 60, LTRED);
+    Text(H2N16(DbgH), 150, 60, LTRED);
+    Text(H2N16(DbgL), 175, 60, LTRED);
     DbgB = (MMY-MMJumpY) & 0xFF; DbgH = DbgB / 16; DbgL = DbgB & 0x0F;
-    Text(H2N16(DbgH), 200, 60, LTPURPLE);
-    Text(H2N16(DbgL), 225, 60, LTPURPLE);
+    Text(H2N16(DbgH), 200, 60, LTRED);
+    Text(H2N16(DbgL), 225, 60, LTRED);
     DbgB = GetTilesTop(MMX, MMY-MMJumpY) /  256; DbgH = DbgB / 16; DbgL = DbgB & 0x0F;
-    Text("TT", 100, 88, LTPURPLE);
-    Text(H2N16(DbgH), 150, 88, LTPURPLE);
-    Text(H2N16(DbgL), 175, 88, LTPURPLE);
+    Text("TT", 100, 88, LTRED);
+    Text(H2N16(DbgH), 150, 88, LTRED);
+    Text(H2N16(DbgL), 175, 88, LTRED);
     DbgB = GetTilesTop(MMX, MMY-MMJumpY) & 0xFF; DbgH = DbgB / 16; DbgL = DbgB & 0x0F;
-    Text(H2N16(DbgH), 200, 88, LTPURPLE);
-    Text(H2N16(DbgL), 225, 88, LTPURPLE);
+    Text(H2N16(DbgH), 200, 88, LTRED);
+    Text(H2N16(DbgL), 225, 88, LTRED);
     DbgB = GetTilesBot(MMX, MMY-MMJumpY) /  256; DbgH = DbgB / 16; DbgL = DbgB & 0x0F;
-    Text("TB", 100, 116, LTPURPLE);
-    Text(H2N16(DbgH), 150, 116, LTPURPLE);
-    Text(H2N16(DbgL), 175, 116, LTPURPLE);
+    Text("TB", 100, 116, LTRED);
+    Text(H2N16(DbgH), 150, 116, LTRED);
+    Text(H2N16(DbgL), 175, 116, LTRED);
     DbgB = GetTilesBot(MMX, MMY-MMJumpY) & 0xFF; DbgH = DbgB / 16; DbgL = DbgB & 0x0F;
-    Text(H2N16(DbgH), 200, 116, LTPURPLE);
-    Text(H2N16(DbgL), 225, 116, LTPURPLE);
+    Text(H2N16(DbgH), 200, 116, LTRED);
+    Text(H2N16(DbgL), 225, 116, LTRED);
+    DbgB = GetTilesAdj(MMX, MMY-MMJumpY, MMDir) /  256; DbgH = DbgB / 16; DbgL = DbgB & 0x0F;
+    Text("TX", 100, 144, LTRED);
+    Text(H2N16(DbgH), 150, 144, LTRED);
+    Text(H2N16(DbgL), 175, 144, LTRED);
+    DbgB = GetTilesAdj(MMX, MMY-MMJumpY, MMDir) & 0xFF; DbgH = DbgB / 16; DbgL = DbgB & 0x0F;
+    Text(H2N16(DbgH), 200, 144, LTRED);
+    Text(H2N16(DbgL), 225, 144, LTRED);
 };
 U0 DrawMMLifeMeter() {
     Buffer->color = BLACK;
@@ -282,7 +289,7 @@ U0 InitGameSettings() {
     MMVBase = 24;
     MMX = 240;
     MMXBound = 300;
-    MMXMax = 3640;
+    MMXMax = 7280;
     MMDir = 1;
     MMPixScale = 3;
     MMY = 311;
@@ -374,7 +381,22 @@ U0 GameLoop() {
             MMShoot += 1;
         };
         if(MMShoot>4) { MMShoot = 0; if(MMState==0) { MMState = 1; }; };
-        if (MMJump==0 && MMDeath==0) { if (GetTilesBot(MMX, MMY-MMJumpY) == 0x2E2E) { MMSlide = 0; MMJump = 2; }; };
+        MMObsH = 0; MMObsL = 0;
+        if (GetTilesBot(MMX, MMY-MMJumpY) / 256 == 0x30) { MMObsH = 1; };
+        if (GetTilesBot(MMX, MMY-MMJumpY) / 256 == 0x32) { MMObsH = 1; };
+        if (GetTilesBot(MMX, MMY-MMJumpY) / 256 == 0x34) { MMObsH = 1; };
+        if (GetTilesBot(MMX, MMY-MMJumpY) / 256 == 0x36) { MMObsH = 1; };
+        if (GetTilesBot(MMX, MMY-MMJumpY) / 256 == 0x38) { MMObsH = 1; };
+        if (GetTilesBot(MMX, MMY-MMJumpY) / 256 == 0x3A) { MMObsH = 1; };
+        if (GetTilesBot(MMX, MMY-MMJumpY) / 256 == 0x3D) { MMObsH = 1; };
+        if (GetTilesBot(MMX, MMY-MMJumpY) & 0xFF == 0x30) { MMObsL = 1; };
+        if (GetTilesBot(MMX, MMY-MMJumpY) & 0xFF == 0x32) { MMObsL = 1; };
+        if (GetTilesBot(MMX, MMY-MMJumpY) & 0xFF == 0x34) { MMObsL = 1; };
+        if (GetTilesBot(MMX, MMY-MMJumpY) & 0xFF == 0x36) { MMObsL = 1; };
+        if (GetTilesBot(MMX, MMY-MMJumpY) & 0xFF == 0x38) { MMObsL = 1; };
+        if (GetTilesBot(MMX, MMY-MMJumpY) & 0xFF == 0x3A) { MMObsL = 1; };
+        if (GetTilesBot(MMX, MMY-MMJumpY) & 0xFF == 0x3D) { MMObsL = 1; };
+        if (MMJump==0 && MMDeath==0) { if (MMObsH == 0 && MMObsL == 0) { MMSlide = 0; MMJump = 2; }; };
         if (MMJump==1) {
             MMJumpY += 48;
             if(MMJumpY>224) { MMSlide = 0; MMJump = 2; };
@@ -397,7 +419,7 @@ U0 GameLoop() {
                 MMX=0;
                 MMY=0;
             };
-            if (MMJump == 2 && GetTilesBot(MMX, MMY-MMJumpY) == 0x2E2E) {
+            if (MMJump == 2 && MMObsH == 0 && MMObsL == 0) {
                 MMJumpY -= 48;
                 } else {
                 MMJump = 0;
@@ -407,12 +429,17 @@ U0 GameLoop() {
             };
         };
         if(MMState>9 & MMState<14) {
-            if (MMDir==0) {
+            MMObsH = 1; MMObsL = 1;
+            if (GetTilesAdj(MMX, MMY-MMJumpY, MMDir) / 256 == 0x2E) { MMObsH = 0; };
+            if (GetTilesAdj(MMX, MMY-MMJumpY, MMDir) / 256 == 0x3D) { MMObsH = 0; };
+            if (GetTilesAdj(MMX, MMY-MMJumpY, MMDir) & 0xFF == 0x2E) { MMObsL = 0; };
+            if (GetTilesAdj(MMX, MMY-MMJumpY, MMDir) & 0xFF == 0x3D) { MMObsL = 0; };
+            if (MMDir==0 && MMObsH==0 && MMObsL==0) {
                 if(MMX>MMXBound) { MMX -= (MMVBase+(MMSlide*0)); };
                 if(MMX<=MMXBound && BufferClipX>0) { BufferClipX -= (MMVBase+(MMSlide*0)); BgrScrollPosX -= 12; };
                 if(MMX<=MMXBound && BufferClipX<=0 && MMX>0) { MMX -= (MMVBase+(MMSlide*0)); };
             };
-            if (MMDir==1) {
+            if (MMDir==1 && MMObsH==0 && MMObsL==0) {
                 if(MMX<MMXBound) { MMX += (MMVBase+(MMSlide*0)); };
                 if(MMX>=MMXBound && BufferClipX<MMXMax) { BufferClipX += (MMVBase+(MMSlide*0)); BgrScrollPosX += 12; };
                 if(MMX>=MMXBound && BufferClipX>=MMXMax && MMX < 520) { MMX += (MMVBase+(MMSlide*0)); };
@@ -531,6 +558,7 @@ U0 MegaMan() {
         GrUpdateScrn;
     };
     // Exit game.
+    FreeBgrs;
     FreeSprites;
     PaletteSetStd;
     DCFill(DCAlias(),TRANSPARENT);

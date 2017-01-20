@@ -1,6 +1,7 @@
 CDC *SPR_Evilman; 
 CDC *SPR_Logo;
 CDC *SPR_Megaman;
+CDC *SPR_MegamanB;
 CDC *SPR_Tiles;
 CDC *SprClip;
 
@@ -8,6 +9,7 @@ U0 LoadSprites() {
 	SPR_Evilman = GRRead("MM");
 	SPR_Logo = GRRead("LOGO");
 	SPR_Megaman = GRRead("MM");
+	SPR_MegamanB = GRRead("MMB");
 	SPR_Tiles = GRRead("TILES");
 	DCColorChg(SPR_Evilman, BLUE, RED);
 	DCColorChg(SPR_Evilman, LTCYAN, LTRED);
@@ -17,6 +19,7 @@ U0 FreeSprites() {
 	DCDel(SPR_Evilman);
 	DCDel(SPR_Logo);
 	DCDel(SPR_Megaman);
+	DCDel(SPR_MegamanB);
 	DCDel(SPR_Tiles);
 };
 

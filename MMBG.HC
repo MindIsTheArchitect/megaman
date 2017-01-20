@@ -52,7 +52,7 @@ U16 GetTilesTop(I64 _xx, I64 _yy) {
     return (TileH * 256) + TileL;
 };
 
-I64 AlignToLadderTile(I64 _xx, I64 _yy) {
+I64 AlignToMapTile(I64 _xx, I64 _yy, U8 _tile) {
     I64 TileIncr, TileH, TileL, TileZ, LTXX, LTIX, LTIY;
     LTXX = -1;
     LTIX = -1;
@@ -62,11 +62,11 @@ I64 AlignToLadderTile(I64 _xx, I64 _yy) {
     while (TileZ<0) { TileZ += 48; TileIncr++; };
     TileH = BgrMap[((BgrScrollPosY+TileZ) / 48)-1+BgrMapStartPosY-TileIncr][(BgrScrollPosX+_xx) / 48];
     TileL = BgrMap[((BgrScrollPosY+TileZ) / 48)-1+BgrMapStartPosY-TileIncr][((BgrScrollPosX+_xx) / 48)+1];
-    if (TileH==0x48) {
+    if (TileH==_tile) {
         LTIY = ((BgrScrollPosY+TileZ) / 48)-1+BgrMapStartPosY-TileIncr;
         LTIX = (BgrScrollPosX+_xx) / 48;
     };
-    if (TileL==0x48) {
+    if (TileL==_tile) {
         LTIY = ((BgrScrollPosY+TileZ) / 48)-1+BgrMapStartPosY-TileIncr;
         LTIX = ((BgrScrollPosX+_xx) / 48)+1;
     };
@@ -86,14 +86,14 @@ I64 AlignToLadderTile(I64 _xx, I64 _yy) {
                     BgrMapPosY++;
                 };
             };
-        BgrIncrY += 48;
+            BgrIncrY += 48;
         };
     };
     return LTXX;
 };
 
 U0 FreeBgrs() {
-	Free(BgrMap);
+    Free(BgrMap);
 };
 
 U0 UpdateBgr() {

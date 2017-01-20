@@ -71,16 +71,16 @@ U0 DrawEnemies() {
                     case 0:
                     switch(MMEnState[MMESCtr]) {
                         case 1:
-                        MMSprite(SPR_Evilman, 0, MMEnX[MMESCtr]-BufferClipX, MMEnY[MMESCtr]-BufferClipY, ((32*3)*1), ((32*3)*0), ((32*3)*2)-1, ((32*3)*1)-1, MMEnDir[   MMESCtr]);
+                        MMSprite(SPR_Evilman, 0, MMEnX[MMESCtr]-BufferClipX, MMEnY[MMESCtr]-BufferClipY, ((32*3)*1), ((32*3)*0), ((32*3)*2)-1, ((32*3)*1)-1, MMEnDir[  MMESCtr]);
                         break;
                         case 2:
-                        MMSprite(SPR_Evilman, 0, MMEnX[MMESCtr]-BufferClipX, MMEnY[MMESCtr]-BufferClipY, ((32*3)*2), ((32*3)*0), ((32*3)*3)-1, ((32*3)*1)-1, MMEnDir[   MMESCtr]);
+                        MMSprite(SPR_Evilman, 0, MMEnX[MMESCtr]-BufferClipX, MMEnY[MMESCtr]-BufferClipY, ((32*3)*2), ((32*3)*0), ((32*3)*3)-1, ((32*3)*1)-1, MMEnDir[  MMESCtr]);
                         break;
                         case 3:
-                        MMSprite(SPR_Evilman, 0, MMEnX[MMESCtr]-BufferClipX, MMEnY[MMESCtr]-BufferClipY, ((32*3)*3), ((32*3)*0), ((32*3)*4)-1, ((32*3)*1)-1, MMEnDir[   MMESCtr]);
+                        MMSprite(SPR_Evilman, 0, MMEnX[MMESCtr]-BufferClipX, MMEnY[MMESCtr]-BufferClipY, ((32*3)*3), ((32*3)*0), ((32*3)*4)-1, ((32*3)*1)-1, MMEnDir[  MMESCtr]);
                         break;
                         case 4:
-                        MMSprite(SPR_Evilman, 0, MMEnX[MMESCtr]-BufferClipX, MMEnY[MMESCtr]-BufferClipY, ((32*3)*2), ((32*3)*0), ((32*3)*3)-1, ((32*3)*1)-1, MMEnDir[   MMESCtr]);
+                        MMSprite(SPR_Evilman, 0, MMEnX[MMESCtr]-BufferClipX, MMEnY[MMESCtr]-BufferClipY, ((32*3)*2), ((32*3)*0), ((32*3)*3)-1, ((32*3)*1)-1, MMEnDir[  MMESCtr]);
                         break;
                     };
                     break;
@@ -171,21 +171,21 @@ U0 DrawDebugText(Bool _debug) {
     DbgB = (MMY-MMJumpY) & 0xFF; DbgH = DbgB / 16; DbgL = DbgB & 0x0F;
     Text(H2N16(DbgH), 200, 60, LTRED);
     Text(H2N16(DbgL), 225, 60, LTRED);
-    DbgB = GetTilesTop(MMX, MMY-MMJumpY) /  256; DbgH = DbgB / 16; DbgL = DbgB & 0x0F;
+    DbgB = GetTilesTop(MMX, MMY-MMJumpY) / 256; DbgH = DbgB / 16; DbgL = DbgB & 0x0F;
     Text("TT", 100, 88, LTRED);
     Text(H2N16(DbgH), 150, 88, LTRED);
     Text(H2N16(DbgL), 175, 88, LTRED);
     DbgB = GetTilesTop(MMX, MMY-MMJumpY) & 0xFF; DbgH = DbgB / 16; DbgL = DbgB & 0x0F;
     Text(H2N16(DbgH), 200, 88, LTRED);
     Text(H2N16(DbgL), 225, 88, LTRED);
-    DbgB = GetTilesBot(MMX, MMY-MMJumpY) /  256; DbgH = DbgB / 16; DbgL = DbgB & 0x0F;
+    DbgB = GetTilesBot(MMX, MMY-MMJumpY) / 256; DbgH = DbgB / 16; DbgL = DbgB & 0x0F;
     Text("TB", 100, 116, LTRED);
     Text(H2N16(DbgH), 150, 116, LTRED);
     Text(H2N16(DbgL), 175, 116, LTRED);
     DbgB = GetTilesBot(MMX, MMY-MMJumpY) & 0xFF; DbgH = DbgB / 16; DbgL = DbgB & 0x0F;
     Text(H2N16(DbgH), 200, 116, LTRED);
     Text(H2N16(DbgL), 225, 116, LTRED);
-    DbgB = GetTilesAdj(MMX, MMY-MMJumpY, MMDir) /  256; DbgH = DbgB / 16; DbgL = DbgB & 0x0F;
+    DbgB = GetTilesAdj(MMX, MMY-MMJumpY, MMDir) / 256; DbgH = DbgB / 16; DbgL = DbgB & 0x0F;
     Text("TX", 100, 144, LTRED);
     Text(H2N16(DbgH), 150, 144, LTRED);
     Text(H2N16(DbgL), 175, 144, LTRED);
@@ -220,7 +220,7 @@ U0 DrawProjectiles() {
             if (MMProjDir[MMPSCtr]==0) { MMProjX[MMPSCtr] -= 32; };
             if (MMProjDir[MMPSCtr]==1) { MMProjX[MMPSCtr] += 32; };
             if (MMProjX[MMPSCtr]>630) { MMProjDir[MMPSCtr] = -1; };
-            if (MMProjX[MMPSCtr]<0)   { MMProjDir[MMPSCtr] = -1; };
+            if (MMProjX[MMPSCtr]<0)  { MMProjDir[MMPSCtr] = -1; };
         };
     };
 };
@@ -384,6 +384,7 @@ U0 GameLoop() {
         };
         if(MMShoot>4) { MMShoot = 0; if(MMState==0) { MMState = 1; }; };
         MMObsH = 0; MMObsL = 0;
+        if (MMLadder>0) { MMObsH = 1; MMObsL = 1; MMAct = 1; };
         if (GetTilesBot(MMX, MMY-MMJumpY) / 256 == 0x30) { MMObsH = 1; };
         if (GetTilesBot(MMX, MMY-MMJumpY) / 256 == 0x32) { MMObsH = 1; };
         if (GetTilesBot(MMX, MMY-MMJumpY) / 256 == 0x34) { MMObsH = 1; };
@@ -400,7 +401,7 @@ U0 GameLoop() {
         if (GetTilesBot(MMX, MMY-MMJumpY) & 0xFF == 0x3A) { MMObsL = 1; };
         if (GetTilesBot(MMX, MMY-MMJumpY) & 0xFF == 0x3D) { MMObsL = 1; };
         if (GetTilesBot(MMX, MMY-MMJumpY) & 0xFF == 0x68) { MMObsL = 1; };
-        if (MMJump==0 && MMDeath==0) { if (MMObsH == 0 && MMObsL == 0) { MMSlide = 0; MMJump = 2; }; };
+        if (MMJump==0 && MMDeath==0 && MMLadder==0) { if (MMObsH == 0 && MMObsL == 0) { MMSlide = 0; MMJump = 2; }; };
         if (MMJump==1) {
             MMJumpY += 48;
             if(MMJumpY>224) { MMSlide = 0; MMJump = 2; };
@@ -442,20 +443,20 @@ U0 GameLoop() {
             if (GetTilesAdj(MMX, MMY-MMJumpY, MMDir) & 0xFF == 0x3D) { MMObsL = 0; };
             if (GetTilesAdj(MMX, MMY-MMJumpY, MMDir) & 0xFF == 0x48) { MMObsL = 0; };
             if (GetTilesAdj(MMX, MMY-MMJumpY, MMDir) & 0xFF == 0x68) { MMObsL = 0; };
-            if (MMDir==0 && MMObsH==0 && MMObsL==0) {
+            if (MMDir==0 && MMLadder==0 && MMObsH==0 && MMObsL==0) {
                 if(MMX>MMXBound) { MMX -= (MMVBase+(MMSlide*0)); };
                 if(MMX<=MMXBound && BufferClipX>0) { BufferClipX -= (MMVBase+(MMSlide*0)); BgrScrollPosX -= 12; };
                 if(MMX<=MMXBound && BufferClipX<=0 && MMX>0) { MMX -= (MMVBase+(MMSlide*0)); };
             };
-            if (MMDir==1 && MMObsH==0 && MMObsL==0) {
+            if (MMDir==1 && MMLadder==0 && MMObsH==0 && MMObsL==0) {
                 if(MMX<MMXBound) { MMX += (MMVBase+(MMSlide*0)); };
                 if(MMX>=MMXBound && BufferClipX<MMXMax) { BufferClipX += (MMVBase+(MMSlide*0)); BgrScrollPosX += 12; };
                 if(MMX>=MMXBound && BufferClipX>=MMXMax && MMX < 520) { MMX += (MMVBase+(MMSlide*0)); };
             };
         };
         if (MMJump>0) {
-            if(MMShoot==0) {  MMSprite(SPR_Megaman, MMInvFlop, MMX, MMY-MMJumpY, ((32*3)*4), ((32*3)*0), ((32*3)*5)-1, ((32*3)*1)-1, MMDir); };
-            if(MMShoot>0) {   MMSprite(SPR_Megaman, MMInvFlop, MMX, MMY-MMJumpY, ((32*3)*4), ((32*3)*1), ((32*3)*5)-1, ((32*3)*2)-1, MMDir); };
+            if(MMShoot==0) { MMSprite(SPR_Megaman, MMInvFlop, MMX, MMY-MMJumpY, ((32*3)*4), ((32*3)*0), ((32*3)*5)-1, ((32*3)*1)-1, MMDir); };
+            if(MMShoot>0) {  MMSprite(SPR_Megaman, MMInvFlop, MMX, MMY-MMJumpY, ((32*3)*4), ((32*3)*1), ((32*3)*5)-1, ((32*3)*2)-1, MMDir); };
         };
         if (MMSlide>0) { MMSprite(SPR_Megaman, MMInvFlop, MMX, MMY-MMJumpY-12, ((32*3)*0), ((32*3)*2), ((32*3)*1)-1, ((32*3)*3)-1, MMDir); };
         if(MMSlide>12) { MMSlide = 0; if(MMState==0) { MMState = 1; }; };
@@ -467,21 +468,36 @@ U0 GameLoop() {
         };
         if (MMHit>12) { MMHit = 0; if(MMState==0) { MMState = 1; }; };
         if (MMDeath>128) { break; };
-        if (MMJump==0 && MMSlide==0 && MMHit==0  && MMDeath==0) {
+        if (MMLadder>0) {
+            if ((GetTilesBot(MMX, MMY) / 256) == 0x48) { MMLadder = 10; };
+            if ((GetTilesBot(MMX, MMY) & 0xFF) == 0x48) { MMLadder = 10; };
+            if (MMLadder==10) { MMLadder=1; } else { MMLadder=0; };
+        };
+        if (MMLadder>0) {
+            if(MMShoot==0) {
+                if(MMState==20) { MMSprite(SPR_Megaman, MMInvFlop, MMX-19, MMY-MMJumpY, ((32*3)*1), ((32*3)*2), ((32*3)*2)-1, ((32*3)*3)-1, 0); };
+                if(MMState==21) { MMSprite(SPR_Megaman, MMInvFlop, MMX-29, MMY-MMJumpY, ((32*3)*1), ((32*3)*2), ((32*3)*2)-1, ((32*3)*3)-1, 1); };
+            };
+            if(MMShoot>0) {
+                if(MMState==20) { MMSprite(SPR_MegamanB, MMInvFlop, MMX-19, MMY-MMJumpY, ((32*3)*0), ((32*3)*0), ((32*3)*1)-1, ((32*3)*1)-1, MMDir); };
+                if(MMState==21) { MMSprite(SPR_MegamanB, MMInvFlop, MMX-29, MMY-MMJumpY, ((32*3)*0), ((32*3)*0), ((32*3)*1)-1, ((32*3)*1)-1, MMDir); };
+            };
+        };
+        if (MMLadder==0 && MMJump==0 && MMSlide==0 && MMHit==0 && MMDeath==0) {
             if (MMState<10) { if (MMShoot>0) { MMSprite(SPR_Megaman, MMInvFlop, MMX, MMY-MMJumpY, ((32*3)*0), ((32*3)*1), ((32*3)*1)-1, ((32*3)*2)-1, MMDir); }; };
             if (MMState==12) {
                 if (MMShoot==0) { MMSprite(SPR_Megaman, MMInvFlop, MMX, MMY-MMJumpY, ((32*3)*3), ((32*3)*0), ((32*3)*4)-1, ((32*3)*1)-1, MMDir); };
-                if (MMShoot>0)  { MMSprite(SPR_Megaman, MMInvFlop, MMX, MMY-MMJumpY, ((32*3)*3), ((32*3)*1), ((32*3)*4)-1, ((32*3)*2)-1, MMDir); };
+                if (MMShoot>0) { MMSprite(SPR_Megaman, MMInvFlop, MMX, MMY-MMJumpY, ((32*3)*3), ((32*3)*1), ((32*3)*4)-1, ((32*3)*2)-1, MMDir); };
                 MMState = 13;
             };
             if (MMState==11) {
                 if (MMShoot==0) { MMSprite(SPR_Megaman, MMInvFlop, MMX, MMY-MMJumpY, ((32*3)*2), ((32*3)*0), ((32*3)*3)-1, ((32*3)*1)-1, MMDir); };
-                if (MMShoot>0)  { MMSprite(SPR_Megaman, MMInvFlop, MMX, MMY-MMJumpY, ((32*3)*2), ((32*3)*1), ((32*3)*3)-1, ((32*3)*2)-1, MMDir); };
+                if (MMShoot>0) { MMSprite(SPR_Megaman, MMInvFlop, MMX, MMY-MMJumpY, ((32*3)*2), ((32*3)*1), ((32*3)*3)-1, ((32*3)*2)-1, MMDir); };
                 MMState = 12;
             };
             if (MMState==10) {
                 if (MMShoot==0) { MMSprite(SPR_Megaman, MMInvFlop, MMX, MMY-MMJumpY, ((32*3)*1), ((32*3)*0), ((32*3)*2)-1, ((32*3)*1)-1, MMDir); };
-                if (MMShoot>0)  { MMSprite(SPR_Megaman, MMInvFlop, MMX, MMY-MMJumpY, ((32*3)*1), ((32*3)*1), ((32*3)*2)-1, ((32*3)*2)-1, MMDir); };
+                if (MMShoot>0) { MMSprite(SPR_Megaman, MMInvFlop, MMX, MMY-MMJumpY, ((32*3)*1), ((32*3)*1), ((32*3)*2)-1, ((32*3)*2)-1, MMDir); };
                 MMState = 11;
             };
             if (MMState==0) {
@@ -503,26 +519,26 @@ U0 GameLoop() {
         if (MMScanCode==0x1d) {
             if (MMSlide==0 && MMHit==0 && MMDeath==0) {
                 MMAct = 1;
-                if (MMShoot==0) {  MMShoot = 1; Sfx(SFX_MMSHOT); }
+                if (MMShoot==0) { MMShoot = 1; Sfx(SFX_MMSHOT); }
             };
         };
         if (MMScanCode==0x48) {
-            if(MMLadder>0) {
-                break;
-            };
+            if(MMLadder>0) { MMAct=1; MMY -= 48; MMState++; if (MMState > 21) { MMState = 20; }; };
             if(MMLadder==0) {
                 if(MMJumpY==0) {
-                    if (AlignToLadderTile(MMX, MMY) > -1) { MMX = AlignToLadderTile(MMX, MMY); Sfx(0x60); };
+                    if (AlignToMapTile(MMX, MMY, 0x48) > -1) { MMLadder=1; MMAct=1; MMState=20; MMX = AlignToMapTile(MMX, MMY, 0x48); MMY -= 48; };
                 };
             };
         };
         if (MMScanCode==0x38 && MMDeath==0) {
             MMAct = 1;
             if(MMCrouch==1) {
-                if (MMSlide==0 && MMHit==0 && MMDeath==0) { if(MMJump==0) { MMSlide = 1; MMState=10; }; };
+                if (MMSlide==0 && MMHit==0 && MMDeath==0 && MMLadder==0) { if(MMJump==0) { MMSlide = 1; MMState=10; }; };
             };
             if(MMCrouch==0) {
-                if (MMJump==0) { if(MMSlide==0 && MMHit==0 && MMDeath==0) { MMJump = 1; Sfx(SFX_MMJUMP); }; };
+                if (MMJump==0) {
+                    if(MMSlide==0 && MMHit==0 && MMDeath==0 && MMLadder==0) { MMJump = 1; Sfx(SFX_MMJUMP); }; if(MMLadder>0) { MMLadder=0; MMJump=2; };
+                };
             };
         };
         if (MMScanCode==0x4b && MMDeath==0) {
@@ -535,10 +551,14 @@ U0 GameLoop() {
             MMDir = 1;
             if (MMState<10) { MMState = 10; };
         };
-        if (MMAct == 0) { if (MMState>15) { MMState = 1; } };
+        if (MMAct == 0) { if (MMLadder==0 && MMState>15) { MMState = 1; } };
         MMCrouch = 0;
         if (MMScanCode==0x50 && MMDeath==0) {
-            MMCrouch = 1;
+            if(MMLadder>0) { MMAct=1; MMY += 48; MMState--; if (MMState < 20) { MMState = 21; }; };
+            if(MMLadder==0) {
+                if (AlignToMapTile(MMX, MMY+128, 0x68) > -1) { MMLadder=1; MMAct=1; MMState=21; MMX = AlignToMapTile(MMX, MMY+128, 0x68); MMY += 48; }
+                else { MMCrouch = 1; };
+            };
         };
         if (MMInvCtr>0) {
             MMInvCtr++;
@@ -567,7 +587,7 @@ U0 MegaMan() {
     GameSetPalette;
     DCFill(Buffer,BLACK);
     MMSprite(SPR_Logo, 0, 48, 48, 0, 0, 545, 167, 0);
-    Text("   PRESS ENTER KEY", 64, 256, WHITE);
+    Text("  PRESS ENTER KEY", 64, 256, WHITE);
     PressAKey;
     while (MMExit==0) {
         InitGameSettings;

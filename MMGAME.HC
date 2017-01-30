@@ -102,57 +102,11 @@ U0 DrawEnemies() {
     };
 };
 U8 H2N16(U8 _hb) {
-    switch(_hb) {
-        case 0x0:
-        return "0";
-        break;
-        case 0x1:
-        return "1";
-        break;
-        case 0x2:
-        return "2";
-        break;
-        case 0x3:
-        return "3";
-        break;
-        case 0x4:
-        return "4";
-        break;
-        case 0x5:
-        return "5";
-        break;
-        case 0x6:
-        return "6";
-        break;
-        case 0x7:
-        return "7";
-        break;
-        case 0x8:
-        return "8";
-        break;
-        case 0x9:
-        return "9";
-        break;
-        case 0xA:
-        return "A";
-        break;
-        case 0xB:
-        return "B";
-        break;
-        case 0xC:
-        return "C";
-        break;
-        case 0xD:
-        return "D";
-        break;
-        case 0xE:
-        return "E";
-        break;
-        case 0xF:
-        return "F";
-        break;
-    };
-    return " ";
+    U8 *h2n_word;
+    U8 *h2n_chars = "0123456789ABCDEF";
+    h2n_word[0] = h2n_chars[_hb];
+    h2n_word[1] = 0x0;
+    return h2n_word;
 };
 U0 DrawDebugText(Bool _debug) {
     if (!_debug) { return; };

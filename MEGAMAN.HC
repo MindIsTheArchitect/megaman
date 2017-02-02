@@ -1,4 +1,5 @@
 CDC *Buffer = DCAlias();
+CDC *BgrMap = GRRead("LEVEL.LVL.Z");
 U8 ScanCode;
 
 #include "GRBLOTR";

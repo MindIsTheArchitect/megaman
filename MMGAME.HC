@@ -219,7 +219,7 @@ U0 InitGameSettings() {
     BgrIncrY=0;
     BgrMapPosX=0;
     BgrMapPosY=0;
-    BgrMapStartPosY=4;
+    BgrMapStartPosY=0;
     BgrScrollPosX=0;
     BgrScrollPosY=0;
     BgrState=0;

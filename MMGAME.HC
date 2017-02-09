@@ -440,6 +440,18 @@ U0 GameLoop() {
             if ((GetTilesBot(MMX, MMY) & 0xFF) == 0x48) { MMLadder = 10; };
             if (MMLadder==10) { MMLadder=1; } else { MMLadder=0; };
         };
+
+        if (MMLadder>0) {
+            if (MMY-MMJumpY>480 && MMDeathPit==0 && MMYTrMode==0) {
+                MMYTrMode = 1;
+                MMYTrBase = BgrScrollPosY;
+            };
+            if (MMY-MMJumpY<0 && MMDeathPit==0 && MMYTrMode==0) {
+                MMYTrMode = 2;
+                MMYTrBase = BgrScrollPosY;
+            };
+        };
+
         if (MMLadder>0) {
             if(MMShoot==0) {
                 if(MMState==20) { MMSprite(SPR_Megaman, MMInvFlop, MMX-19, MMY-MMJumpY, ((32*3)*1), ((32*3)*2), ((32*3)*2)-1, ((32*3)*3)-1, 0); };
@@ -485,11 +497,37 @@ U0 GameLoop() {
         if (MMScanCode==0x01) { MMExit = 1; break; };
         if (MMYTrMode>0) { MMScanCode = 0x00; MMAct = 0; MMState = 1; };
 
-        if (MMYTrMode==1) {
+        if (MMYTrMode==1 && MMJump==2) {
             MMJumpY += 96;
             if (BgrScrollPosY<(MMYTrBase+480)) {
                 BgrScrollPosY += 48;
             } else {
+                MMYTrMode = 0;
+            };
+        };
+
+        if (MMYTrMode==1 && MMLadder>0) {
+            if (MMState<20) { MMState = 21; };            
+            if (MMState>21) { MMState = 20; };
+            MMY -= 48;
+            MMJumpY = 0;
+            if (BgrScrollPosY<(MMYTrBase+480)) {
+                BgrScrollPosY += 48;
+            } else {
+                MMY += 48;
+                MMYTrMode = 0;
+            };
+        };
+
+        if (MMYTrMode==2 && MMLadder>0) {
+            if (MMState<20) { MMState = 21; };            
+            if (MMState>21) { MMState = 20; };
+            MMY += 48;
+            MMJumpY = 0;
+            if (BgrScrollPosY>(MMYTrBase-480)) {
+                BgrScrollPosY -= 48;
+            } else {
+                MMY -= 48;
                 MMYTrMode = 0;
             };
         };

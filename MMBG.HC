@@ -142,6 +142,14 @@ U0 UpdateBgr() {
                 case 0x68:
                 MMSprite(SPR_Tiles, 0, BgrIncrX - (BgrScrollPosX % 48), BgrIncrY, 0, 204, 0+47, 204+47, 0);
                 break;
+                // Bottom of pit (death, not screen transition)
+                case 0x7E:
+                if (MM_EDIT_MODE) {
+                    Buffer->color=RED;
+                    GrRect(Buffer, BgrIncrX - (BgrScrollPosX % 48), BgrIncrY, 48, 48);
+                    break;
+                }
+
             };
             BgrIncrX += 48;
             BgrMapPosX++;

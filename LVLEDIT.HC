@@ -1,3 +1,4 @@
+Bool MM_EDIT_MODE = TRUE;
 CDC *Buffer = DCAlias();
 CDC *BgrMap = DCNew(512, 512);
 I64 PtrMsGrab, PtrMsStd;
@@ -6,7 +7,7 @@ U8 ScanCode;
 U8 Tile;
 U8 TileOptC;
 U8 TileOptM;
-U8 *TileOpt = ".0=H123456789:hME";
+U8 *TileOpt = ".0=H123456789:hME~";
 
 PtrMsGrab = *gr.fp_draw_grab_ms;
 PtrMsStd = *gr.fp_draw_ms;
@@ -123,6 +124,12 @@ U0 LvlEdit(U8 *BgrMapFile = "") {
             case 0x68:
             MMSprite(SPR_Tiles, 0, 48*(ms.pos.x/48), 48*(ms.pos.y/48), 0, 204, 0+47, 204+47, 0);
             break;
+            // Bottom of pit (death, not screen transition)
+            case 0x7E:
+            Buffer->color=RED;
+            GrRect(Buffer, 48*(ms.pos.x/48), 48*(ms.pos.y/48), 48, 48);
+            break;
+
     	};
     	Buffer->color=WHITE;
     	GrHLine(Buffer, 48*(ms.pos.x/48), (48*(ms.pos.x/48))+47, 48*(ms.pos.y/48));

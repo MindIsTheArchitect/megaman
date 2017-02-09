@@ -23,6 +23,7 @@ I64 MMShoot;
 I64 MMSlide;
 I64 MMState;
 I64 MMVBase;
+I64 MMYTrBase, MMYTrMode;
 I64 RMIncr, RMFlop;
 I64 SysTimerCnt;
 I64 TelY;
@@ -249,6 +250,8 @@ U0 InitGameSettings() {
     MMDir = 1;
     MMPixScale = 3;
     MMY = 311;
+    MMYTrBase = 0;
+    MMYTrMode = 0;
     // Clear projectiles.
     for (MMProjInit=0;MMProjInit<8;MMProjInit++) { MMProjX[MMProjInit]=0; MMProjY[MMProjInit]=0; MMProjDir[MMProjInit]=-1; };
     // Clear enemies.
@@ -361,8 +364,12 @@ U0 GameLoop() {
             if(MMJumpY>224) { MMSlide = 0; MMJump = 2; };
             if(MMJumpY>96 && (InU8(0x60) != 0x38)) { MMSlide = 0; MMJump = 2; };
         };
-        if (MMJump==2) {
-            if (MMY-MMJumpY>480) {
+        if (MMJump==2 && MMDeathPit==0) {
+
+            if (GetTilesBot(MMX, MMY-MMJumpY) / 256 == 0x7E) { MMDeathPit = 1; };
+            if (GetTilesBot(MMX, MMY-MMJumpY) & 0xFF == 0x7E) { MMDeathPit = 1; };
+
+            if (MMDeathPit==1) {
                 for(MMDeathInit=0;MMDeathInit<12;MMDeathInit++) { MMDeathX[MMDeathInit] = -999; MMDeathY[MMDeathInit] = -999; }
                 Sfx(SFX_MMDEATH);
                 MMDeath=1;
@@ -378,6 +385,12 @@ U0 GameLoop() {
                 MMX=0;
                 MMY=0;
             };
+
+            if (MMY-MMJumpY>480 && MMDeathPit==0 && MMYTrMode==0) {
+                MMYTrMode = 1;
+                MMYTrBase = BgrScrollPosY;
+            };
+
             if (MMJump == 2 && MMObsH == 0 && MMObsL == 0) {
                 MMJumpY -= 48;
                 } else {
@@ -470,6 +483,17 @@ U0 GameLoop() {
         MMAct = 0;
         MMScanCode = InU8(0x60);
         if (MMScanCode==0x01) { MMExit = 1; break; };
+        if (MMYTrMode>0) { MMScanCode = 0x00; MMAct = 0; MMState = 1; };
+
+        if (MMYTrMode==1) {
+            MMJumpY += 96;
+            if (BgrScrollPosY<(MMYTrBase+480)) {
+                BgrScrollPosY += 48;
+            } else {
+                MMYTrMode = 0;
+            };
+        };
+
         if (MMScanCode==0x1d) {
             if (MMSlide==0 && MMHit==0 && MMDeath==0) {
                 MMAct = 1;
@@ -537,7 +561,6 @@ U0 MegaMan() {
     AutoComplete;
     DocCursor;
     WinBorder;
-    MsSet(639,479,0);
     GameSetPalette;
     DCFill(Buffer,BLACK);
     MMSprite(SPR_Logo, 0, 48, 48, 0, 0, 545, 167, 0);
@@ -545,6 +568,8 @@ U0 MegaMan() {
     PressAKey;
     while (MMExit==0) {
         InitGameSettings;
+        *gr.fp_draw_grab_ms = &HideMs;
+        *gr.fp_draw_ms = &HideMs;
         DCFill(Buffer,BLACK);
         GameLoop;
         GrUpdateScrn;
@@ -554,6 +579,8 @@ U0 MegaMan() {
     FreeSprites;
     PaletteSetStd;
     DCFill(DCAlias(),TRANSPARENT);
+    *gr.fp_draw_grab_ms = PtrMsGrab;
+    *gr.fp_draw_ms = PtrMsStd;
     GrUpdateScrn;
     DocClear;
     SettingsPop;

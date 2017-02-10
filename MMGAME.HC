@@ -541,9 +541,7 @@ U0 GameLoop() {
         if (MMScanCode==0x48) {
             if(MMLadder>0) { MMAct=1; MMY -= 48; MMState++; if (MMState > 21) { MMState = 20; }; };
             if(MMLadder==0) {
-                if(MMJumpY==0) {
-                    if (AlignToMapTile(MMX, MMY, 0x48) > -1) { MMLadder=1; MMAct=1; MMState=20; MMX = AlignToMapTile(MMX, MMY, 0x48); MMY -= 48; };
-                };
+                if (AlignToMapTile(MMX, MMY, 0x48) > -1) { MMLadder=1; MMAct=1; MMState=20; MMX = AlignToMapTile(MMX, MMY, 0x48); MMY -= 48; };
             };
         };
         if (MMScanCode==0x38 && MMDeath==0) {

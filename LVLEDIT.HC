@@ -1,6 +1,9 @@
 Bool MM_EDIT_MODE = TRUE;
 CDC *Buffer = DCAlias();
+CDC *BgrImage = DCNew(0, 0);
 CDC *BgrMap = DCNew(512, 512);
+CDC *BgrLayer = DCNew(0, 0);
+
 I64 PtrMsGrab, PtrMsStd;
 I64 TxtB, TxtH, TxtL;
 U8 ScanCode;

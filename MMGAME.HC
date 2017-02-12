@@ -281,6 +281,7 @@ U0 GameLoop() {
                             if (MMHealth>0) { Sfx(SFX_MMHIT); MMInvCtr = 1; MMInvFlop = 0; };
                             if (MMHealth<=0) {
                                 for(MMDeathInit=0;MMDeathInit<12;MMDeathInit++) { MMDeathX[MMDeathInit] = MMX; MMDeathY[MMDeathInit] = MMY-MMJumpY; }
+                                Sfx(MUS_STOP);
                                 Sfx(SFX_MMDEATH);
                                 MMDeath=1;
                                 MMDeathPit=0;
@@ -371,6 +372,7 @@ U0 GameLoop() {
 
             if (MMDeathPit==1) {
                 for(MMDeathInit=0;MMDeathInit<12;MMDeathInit++) { MMDeathX[MMDeathInit] = -999; MMDeathY[MMDeathInit] = -999; }
+                Sfx(MUS_STOP);    
                 Sfx(SFX_MMDEATH);
                 MMDeath=1;
                 MMDeathPit=1;
@@ -607,10 +609,12 @@ U0 MegaMan() {
         *gr.fp_draw_grab_ms = &HideMs;
         *gr.fp_draw_ms = &HideMs;
         DCFill(Buffer,BLACK);
+        Sfx(MUS_DEMO);
         GameLoop;
         GrUpdateScrn;
     };
     // Exit game.
+    Sfx(MUS_STOP);
     FreeBgrs;
     FreeSprites;
     PaletteSetStd;

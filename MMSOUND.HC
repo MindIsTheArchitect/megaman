@@ -1,3 +1,6 @@
+#define MUS_STOP 		0x40
+#define MUS_DEMO	 	0x41
+
 #define SFX_MMTELIN 	0x54
 #define SFX_MMSHOT		0x55
 #define SFX_MMJUMP 		0x56

@@ -1,6 +1,9 @@
 Bool MM_EDIT_MODE = FALSE;
 CDC *Buffer = DCAlias();
+CDC *BgrImage = GRRead("BG1.GR.Z");
 CDC *BgrMap = GRRead("LEVEL.LVL.Z");
+CDC *BgrLayer = DCNew(640, 480);
+
 I64 PtrMsGrab, PtrMsStd;
 U8 ScanCode;
 

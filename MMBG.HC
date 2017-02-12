@@ -3,6 +3,9 @@ I64 BgrState;
 I64 BgrMapStartPosY, BgrMapPosX, BgrMapPosY;
 I64 BgrScrollPosX, BgrScrollPosY;
 
+CDC *OpaqueTile = DCNew(48, 48);
+DCFill(OpaqueTile, DKGRAY);
+
 U16 GetTilesAdj(I64 _xx, I64 _yy, I64 _dir) {
     I64 TileIncr, TileH, TileL, TileZ;
     TileIncr = 0;
@@ -73,7 +76,10 @@ I64 AlignToMapTile(I64 _xx, I64 _yy, U8 _tile) {
 };
 
 U0 FreeBgrs() {
+    Free(BgrImage);
     Free(BgrMap);
+    Free(BgrLayer);
+    Free(OpaqueTile);
 };
 
 U0 UpdateBgr() {
@@ -81,13 +87,20 @@ U0 UpdateBgr() {
     BgrIncrY=0;
     BgrMapPosX=BgrScrollPosX/48;
     BgrMapPosY=BgrMapStartPosY+(BgrScrollPosY/48);
-    DCFill(Buffer, DKGRAY);
+    if (MM_EDIT_MODE==FALSE) {
+      DCFill(Buffer, DKGRAY);        
+      GrBlot(Buffer, 0, 0, DCExt(BgrImage, (BgrScrollPosX % (BgrImage->width-640)), BgrScrollPosY, (BgrScrollPosX % (BgrImage->width-640)) + 639, BgrScrollPosY + 479));
+    } else {
+      DCFill(Buffer, DKGRAY);
+    };
+
     while (BgrIncrY<(48*20)) {
         BgrIncrX = 0;
         while (BgrIncrX<(48*26)) {
             switch (GrPeek(BgrMap, BgrMapPosX, BgrMapPosY)) {
                 // Ground tiles
                 case 0x30:
+                GrBlot(Buffer, BgrIncrX - (BgrScrollPosX % 48), BgrIncrY, OpaqueTile);
                 MMSprite(SPR_Tiles, 0, BgrIncrX - (BgrScrollPosX % 48), BgrIncrY, 255, 0, 255+47, 0+47, 0);
                 break;
                 // Jump-through blocks
@@ -96,42 +109,52 @@ U0 UpdateBgr() {
                 break;
                 // Left1stPanel
                 case 0x31:
+                GrBlot(Buffer, BgrIncrX - (BgrScrollPosX % 48), BgrIncrY, OpaqueTile);
                 MMSprite(SPR_Tiles, 0, BgrIncrX - (BgrScrollPosX % 48), BgrIncrY, 0, 51, 0+47, 51+47, 0);
                 break;
                 // TopLeft1stPanel
                 case 0x32:
+                GrBlot(Buffer, BgrIncrX - (BgrScrollPosX % 48), BgrIncrY, OpaqueTile);
                 MMSprite(SPR_Tiles, 0, BgrIncrX - (BgrScrollPosX % 48), BgrIncrY, 0, 0, 0+47, 0+47, 0);
                 break;
                 // Left2ndPanel
                 case 0x33:
+                GrBlot(Buffer, BgrIncrX - (BgrScrollPosX % 48), BgrIncrY, OpaqueTile);
                 MMSprite(SPR_Tiles, 0, BgrIncrX - (BgrScrollPosX % 48), BgrIncrY, 51, 51, 51+47, 51+47, 0);
                 break;
                 // TopLeft2ndPanel
                 case 0x34:
+                GrBlot(Buffer, BgrIncrX - (BgrScrollPosX % 48), BgrIncrY, OpaqueTile);
                 MMSprite(SPR_Tiles, 0, BgrIncrX - (BgrScrollPosX % 48), BgrIncrY, 51, 0, 51+47, 0+47, 0);
                 break;
                 // MidPanel
                 case 0x35:
+                GrBlot(Buffer, BgrIncrX - (BgrScrollPosX % 48), BgrIncrY, OpaqueTile);
                 MMSprite(SPR_Tiles, 0, BgrIncrX - (BgrScrollPosX % 48), BgrIncrY, 102, 51, 102+47, 51+47, 0);
                 break;
                 // TopMidPanel
                 case 0x36:
+                GrBlot(Buffer, BgrIncrX - (BgrScrollPosX % 48), BgrIncrY, OpaqueTile);
                 MMSprite(SPR_Tiles, 0, BgrIncrX - (BgrScrollPosX % 48), BgrIncrY, 102, 0, 102+47, 0+47, 0);
                 break;
                 // Right2ndPanel
                 case 0x37:
+                GrBlot(Buffer, BgrIncrX - (BgrScrollPosX % 48), BgrIncrY, OpaqueTile);
                 MMSprite(SPR_Tiles, 0, BgrIncrX - (BgrScrollPosX % 48), BgrIncrY, 153, 51, 153+47, 51+47, 0);
                 break;
                 // TopRight2ndPanel
                 case 0x38:
+                GrBlot(Buffer, BgrIncrX - (BgrScrollPosX % 48), BgrIncrY, OpaqueTile);
                 MMSprite(SPR_Tiles, 0, BgrIncrX - (BgrScrollPosX % 48), BgrIncrY, 153, 0, 153+47, 0+47, 0);
                 break;
                 // Right1stPanel
                 case 0x39:
+                GrBlot(Buffer, BgrIncrX - (BgrScrollPosX % 48), BgrIncrY, OpaqueTile);
                 MMSprite(SPR_Tiles, 0, BgrIncrX - (BgrScrollPosX % 48), BgrIncrY, 204, 51, 204+47, 51+47, 0);
                 break;
                 // TopRight1stPanel
                 case 0x3A:
+                GrBlot(Buffer, BgrIncrX - (BgrScrollPosX % 48), BgrIncrY, OpaqueTile);
                 MMSprite(SPR_Tiles, 0, BgrIncrX - (BgrScrollPosX % 48), BgrIncrY, 204, 0, 204+47, 0+47, 0);
                 break;
                 // Ladder

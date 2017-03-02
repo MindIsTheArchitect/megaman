@@ -610,11 +610,13 @@ U0 MegaMan() {
         *gr.fp_draw_ms = &HideMs;
         DCFill(Buffer,BLACK);
         Sfx(MUS_DEMO);
+        Spawn(&PCSP);
         GameLoop;
         GrUpdateScrn;
     };
     // Exit game.
     Sfx(MUS_STOP);
+    PCSP_EXIT=TRUE;
     FreeBgrs;
     FreeSprites;
     PaletteSetStd;

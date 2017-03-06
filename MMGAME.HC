@@ -608,7 +608,7 @@ U0 MegaMan() {
         InitGameSettings;
         *gr.fp_draw_grab_ms = &HideMs;
         *gr.fp_draw_ms = &HideMs;
-        DCFill(Buffer,BLACK);
+        DCFill(Buffer,TRANSPARENT);
         Sfx(MUS_DEMO);
         Spawn(&PCSP);
         GameLoop;

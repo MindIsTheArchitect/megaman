@@ -88,8 +88,8 @@ U0 UpdateBgr() {
     BgrMapPosX=BgrScrollPosX/48;
     BgrMapPosY=BgrMapStartPosY+(BgrScrollPosY/48);
     if (MM_EDIT_MODE==FALSE) {
-      DCFill(Buffer, DKGRAY);        
-      GrBlot(Buffer, 0, 0, DCExt(BgrImage, (BgrScrollPosX % (BgrImage->width-640)), BgrScrollPosY, (BgrScrollPosX % (BgrImage->width-640)) + 639, BgrScrollPosY + 479));
+      DCFill(Buffer, TRANSPARENT);
+      GrBlot(Buffer, -(BgrScrollPosX % (BgrImage->width-640)), -BgrScrollPosY, BgrImage);
     } else {
       DCFill(Buffer, DKGRAY);
     };

@@ -33,7 +33,7 @@ U0 PCSP()
   while (PCSP_EXIT==FALSE) {
   	while (PCSP_PLAY==TRUE) {
       while (PCM_POS < PCM_OFS+PCM_LEN) {
-  	    Snd(PCM_TABLE[PCM_POS]);
+  	    Snd(PCM_TABLE[PCM_POS]*2);
 	    PCM_POS++;
 	    Sleep(0);
 	    delay_loop=0;
